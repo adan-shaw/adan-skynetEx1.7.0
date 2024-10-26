@@ -437,10 +437,10 @@ Copyright (C) 2012 Free Software Foundation, Inc.
 This config.status script is free software; the Free Software Foundation
 gives unlimited permission to copy, distribute and modify it."
 
-ac_pwd='/home/adan/Documents/skynetEx1.7.0/3rd/jemalloc'
+ac_pwd='/home/adan/Documents/github_project/github-skynet/XX/adan-skynetEx1.7.0/3rd/jemalloc'
 srcdir='.'
 INSTALL='/usr/bin/install -c'
-AWK='mawk'
+AWK='gawk'
 test -n "$AWK" || AWK=awk
 # The default lists apply if the user does not specify any file.
 ac_need_defaults=:
@@ -751,7 +751,7 @@ S["jemalloc_version_bugfix"]="1"
 S["jemalloc_version_minor"]="2"
 S["jemalloc_version_major"]="5"
 S["jemalloc_version"]="5.2.1-0-gea6b3e973b477b8061e0076bb257dbd7f3faa756"
-S["AWK"]="mawk"
+S["AWK"]="gawk"
 S["NM"]="nm"
 S["AR"]="ar"
 S["host_os"]="linux-gnu"
@@ -783,17 +783,17 @@ S["CPPFLAGS"]="-D_GNU_SOURCE -D_REENTRANT"
 S["LDFLAGS"]=""
 S["CFLAGS"]="-std=gnu11 -Wall -Wextra -Wsign-compare -Wundef -Wno-format-zero-length -pipe -fvisibility=hidden -O3 -funroll-loops"
 S["CC"]="gcc"
-S["XSLROOT"]=""
-S["XSLTPROC"]="false"
+S["XSLROOT"]="/usr/share/xml/docbook/stylesheet/docbook-xsl"
+S["XSLTPROC"]="/usr/bin/xsltproc"
 S["MANDIR"]="/usr/local/share/man"
 S["DATADIR"]="/usr/local/share"
 S["LIBDIR"]="/usr/local/lib"
 S["INCLUDEDIR"]="/usr/local/include"
 S["BINDIR"]="/usr/local/bin"
 S["PREFIX"]="/usr/local"
-S["abs_objroot"]="/home/adan/Documents/skynetEx1.7.0/3rd/jemalloc/"
+S["abs_objroot"]="/home/adan/Documents/github_project/github-skynet/XX/adan-skynetEx1.7.0/3rd/jemalloc/"
 S["objroot"]=""
-S["abs_srcroot"]="/home/adan/Documents/skynetEx1.7.0/3rd/jemalloc/"
+S["abs_srcroot"]="/home/adan/Documents/github_project/github-skynet/XX/adan-skynetEx1.7.0/3rd/jemalloc/"
 S["srcroot"]=""
 S["rev"]="2"
 S["CONFIG"]="--with-jemalloc-prefix=je_ --enable-autogen --enable-shared --enable-static --enable-experimental-smallocx --enable-prof --enable-prof-libunwind --e"\

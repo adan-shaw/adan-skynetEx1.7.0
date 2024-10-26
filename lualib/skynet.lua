@@ -36,11 +36,11 @@ local skynet = {
 	PTYPE_HARBOR = 5,
 	PTYPE_SOCKET = 6,
 	PTYPE_ERROR = 7,
-	PTYPE_QUEUE = 8,   -- used in deprecated mqueue, use skynet.queue instead
+	PTYPE_QUEUE = 8,	-- used in deprecated mqueue, use skynet.queue instead
 	PTYPE_DEBUG = 9,
 	PTYPE_LUA = 10,
 	PTYPE_SNAX = 11,
-	PTYPE_TRACE = 12,  -- use for debug trace
+	PTYPE_TRACE = 12,	-- use for debug trace
 }
 
 -- code cache
@@ -78,7 +78,7 @@ do ---- avoid session rewind conflict
 	local dangerzone_low = 0x70000000
 	local dangerzone_up	= dangerzone_low + dangerzone_size
 
-	local set_checkrewind   -- set auxsend and auxtimeout for safezone
+	local set_checkrewind	-- set auxsend and auxtimeout for safezone
 	local set_checkconflict -- set auxsend and auxtimeout for dangerzone
 
 	local function reset_dangerzone(session)

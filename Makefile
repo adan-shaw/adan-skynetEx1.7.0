@@ -6,11 +6,13 @@ SKYNET_BUILD_PATH ?= .
 
 
 
+#
 # 发行版
+#
 CFLAGS = -O2 -Wall -I$(LUA_INC) $(MYCFLAGS) -DNDEBUG
 # debug 版
 #CFLAGS = -O2 -Wall -I$(LUA_INC) $(MYCFLAGS) $(MYDEBUG) 
-#CFLAGS += -DUSE_PTHREAD_LOCK
+# CFLAGS += -DUSE_PTHREAD_LOCK
 
 
 
@@ -41,6 +43,7 @@ TLS_INC=
 JEMALLOC_STATICLIB := 3rd/jemalloc/lib/libjemalloc_pic.a
 JEMALLOC_INC := 3rd/jemalloc/include/jemalloc
 
+# 这里整个all, 整个'	' 不能删, 否则makefile 崩溃!! 暗哨很多, 呵呵!!(整个格式, 改动难度较大, 很容易崩溃, 呵呵)
 all : jemalloc
 	
 .PHONY : jemalloc update3rd

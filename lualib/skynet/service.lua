@@ -37,7 +37,7 @@ end
 function service.close(name)
 	local addr = skynet.call(get_provider(), "lua", "close", name)
 	if addr then
-		cache[name] = nil
+        cache[name] = nil
 		skynet.kill(addr)
 		return true
 	end

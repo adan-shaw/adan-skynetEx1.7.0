@@ -8,9 +8,9 @@ local conf = {
 }
 
 local function read_table(t)
-	local result = { }
-	for i = 1, #t, 2 do result[t[i]] = t[i + 1] end
-	return result
+    local result = { }
+    for i = 1, #t, 2 do result[t[i]] = t[i + 1] end
+    return result
 end
 
 skynet.start(function()

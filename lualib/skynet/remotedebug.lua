@@ -249,7 +249,7 @@ local function hook_dispatch(dispatcher, resp, fd, channel)
 	if func then
 		local function idle()
 			if raw_dispatcher then
-				skynet.timeout(10,idle)	-- idle every 0.1s
+			    skynet.timeout(10,idle)	-- idle every 0.1s
 			end
 		end
 		skynet.timeout(0, idle)

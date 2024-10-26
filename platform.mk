@@ -1,10 +1,9 @@
 PLAT ?= none
 PLATS = linux freebsd macosx
+
 CC ?= gcc
 
 .PHONY : none $(PLATS) clean all cleanall
-
-
 
 #ifneq ($(PLAT), none)
 
@@ -14,8 +13,6 @@ default :
 	$(MAKE) $(PLAT)
 
 #endif
-
-
 
 none :
 	@echo "Please do 'make PLATFORM' where PLATFORM is one of these:"
@@ -38,8 +35,6 @@ linux freebsd : SKYNET_LIBS += -lrt
 
 macosx : MALLOC_STATICLIB :=
 macosx : SKYNET_DEFINES :=-DNOUSE_JEMALLOC
-
-
 
 linux macosx freebsd :
 	$(MAKE) all PLAT=$@ SKYNET_LIBS="$(SKYNET_LIBS)" SHARED="$(SHARED)" EXPORT="$(EXPORT)" MALLOC_STATICLIB="$(MALLOC_STATICLIB)" SKYNET_DEFINES="$(SKYNET_DEFINES)"
