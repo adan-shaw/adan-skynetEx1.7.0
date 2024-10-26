@@ -13,12 +13,12 @@ end
 
 -- test case from http://regex.info/code/sha1.lua
 
-print(1) assert(sha1 "http://regex.info/blog/"                                  == "7f103bf600de51dfe91062300c14738b32725db5", 1)
-print(2) assert(sha1(string.rep("a", 10000))                                    == "a080cbda64850abb7b7f67ee875ba068074ff6fe", 2)
-print(3) assert(sha1 "abc"                                                      == "a9993e364706816aba3e25717850c26c9cd0d89d", 3)
+print(1) assert(sha1 "http://regex.info/blog/"								  == "7f103bf600de51dfe91062300c14738b32725db5", 1)
+print(2) assert(sha1(string.rep("a", 10000))									== "a080cbda64850abb7b7f67ee875ba068074ff6fe", 2)
+print(3) assert(sha1 "abc"													  == "a9993e364706816aba3e25717850c26c9cd0d89d", 3)
 print(4) assert(sha1 "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq" == "84983e441c3bd26ebaae4aa1f95129e5e54670f1", 4)
-print(5) assert(sha1 "The quick brown fox jumps over the lazy dog"              == "2fd4e1c67a2d28fced849ee1bb76e7391b93eb12", 5)
-print(6) assert(sha1 "The quick brown fox jumps over the lazy cog"              == "de9f2c7fd25e1b3afad3e85a0bd17d9b100db4b3", 6)
+print(5) assert(sha1 "The quick brown fox jumps over the lazy dog"			  == "2fd4e1c67a2d28fced849ee1bb76e7391b93eb12", 5)
+print(6) assert(sha1 "The quick brown fox jumps over the lazy cog"			  == "de9f2c7fd25e1b3afad3e85a0bd17d9b100db4b3", 6)
 print(7) assert("efb750130b6cc9adf4be219435e575442ec68b7c" == sha1(string.char(136,43,218,202,158,86,64,140,154,173,20,184,170,125,37,54,208,68,171,24,164,89,142,111,148,235,187,181,122):rep(76)), 7)
 print(8) assert("432dff9d4023e13194170287103d0377ed182d96" == sha1(string.char(20,174):rep(407)), 8)
 print(9) assert("ccba5c47946530726bb86034dbee1dbf0c203e99" == sha1(string.char(20,54,149,252,176,4,96,100,223):rep(753)), 9)

@@ -52,61 +52,63 @@
 
 struct socket_server;
 
-struct socket_message {
+struct socket_message
+{
 	int id;
 	uintptr_t opaque;
-	int ud;	// for accept, ud is new connection id ; for data, ud is size of data 
-	char * data;
+	int ud;												// for accept, ud is new connection id ; for data, ud is size of data 
+	char *data;
 };
 
 //原始'sfd info结构体' 的创建和释放
-struct socket_server * socket_server_create(uint64_t time);																										//创建'sfd info结构体'
-void socket_server_release(struct socket_server *);																														//释放'sfd info结构体'
+struct socket_server *socket_server_create (uint64_t time);	//创建'sfd info结构体'
+void socket_server_release (struct socket_server *);	//释放'sfd info结构体'
 
 //特殊的监听'sfd info结构体'的操作
-void socket_server_updatetime(struct socket_server *, uint64_t time);
-int socket_server_poll(struct socket_server *, struct socket_message *result, int *more);											//接收监听'sfd info结构体'下所有的io 事件, 包括accept, 数据io 循环
-void socket_server_exit(struct socket_server *);																															//监听'sfd info结构体' exit, 并通知socket_server_poll 停止io 循环
-void socket_server_close(struct socket_server *, uintptr_t opaque, int id);																		//在监听'sfd info结构体'中, 关闭指定id 的'sfd info结构体', 并踢出监听poll
-void socket_server_shutdown(struct socket_server *, uintptr_t opaque, int id);
-void socket_server_start(struct socket_server *, uintptr_t opaque, int id);																		//监听'sfd info结构体' start, 并开始io 循环
-void socket_server_pause(struct socket_server *, uintptr_t opaque, int id);
+void socket_server_updatetime (struct socket_server *, uint64_t time);
+int socket_server_poll (struct socket_server *, struct socket_message *result, int *more);	//接收监听'sfd info结构体'下所有的io 事件, 包括accept, 数据io 循环
+void socket_server_exit (struct socket_server *);	//监听'sfd info结构体' exit, 并通知socket_server_poll 停止io 循环
+void socket_server_close (struct socket_server *, uintptr_t opaque, int id);	//在监听'sfd info结构体'中, 关闭指定id 的'sfd info结构体', 并踢出监听poll
+void socket_server_shutdown (struct socket_server *, uintptr_t opaque, int id);
+void socket_server_start (struct socket_server *, uintptr_t opaque, int id);	//监听'sfd info结构体' start, 并开始io 循环
+void socket_server_pause (struct socket_server *, uintptr_t opaque, int id);
 
 // return -1 when error
-int socket_server_send(struct socket_server *, struct socket_sendbuffer *buffer);															//命令已建立连接的'sfd info结构体', 进行高优先级数据发送
-int socket_server_send_lowpriority(struct socket_server *, struct socket_sendbuffer *buffer);									//命令已建立连接的'sfd info结构体', 进行低优先级数据发送
+int socket_server_send (struct socket_server *, struct socket_sendbuffer *buffer);	//命令已建立连接的'sfd info结构体', 进行高优先级数据发送
+int socket_server_send_lowpriority (struct socket_server *, struct socket_sendbuffer *buffer);	//命令已建立连接的'sfd info结构体', 进行低优先级数据发送
 
 // ctrl command below returns id(控制命令: 以下的返回id)
-int socket_server_listen(struct socket_server *, uintptr_t opaque, const char * addr, int port, int backlog);	//命令原始'sfd info结构体'进行端口监听(并加入epoll列表), 返回id
-int socket_server_connect(struct socket_server *, uintptr_t opaque, const char * addr, int port);							//命令原始'sfd info结构体'创建非阻塞连接, 并加入epoll列表, 返回id
-//int socket_server_block_connect(struct socket_server *, uintptr_t opaque, const char * addr, int port);			//命令原始'sfd info结构体'创建阻塞连接, 并加入epoll列表, 返回id(已经被弃用)
-int socket_server_bind(struct socket_server *, uintptr_t opaque, int fd);																			//绑定某个fd到epoll列表, 会自动添加'sfd info结构体', 返回id
+int socket_server_listen (struct socket_server *, uintptr_t opaque, const char *addr, int port, int backlog);	//命令原始'sfd info结构体'进行端口监听(并加入epoll列表), 返回id
+int socket_server_connect (struct socket_server *, uintptr_t opaque, const char *addr, int port);	//命令原始'sfd info结构体'创建非阻塞连接, 并加入epoll列表, 返回id
+//int socket_server_block_connect(struct socket_server *, uintptr_t opaque, const char * addr, int port);	 //命令原始'sfd info结构体'创建阻塞连接, 并加入epoll列表, 返回id(已经被弃用)
+int socket_server_bind (struct socket_server *, uintptr_t opaque, int fd);	//绑定某个fd到epoll列表, 会自动添加'sfd info结构体', 返回id
 
 // for tcp
-void socket_server_nodelay(struct socket_server *, int id);																										//命令已建立连接的'sfd info结构体'的开启nodelay 算法
+void socket_server_nodelay (struct socket_server *, int id);	//命令已建立连接的'sfd info结构体'的开启nodelay 算法
 
 struct socket_udp_address;
 
 // create an udp socket handle, attach opaque with it . udp socket don't need call socket_server_start to recv message
 // if port != 0, bind the socket . if addr == NULL, bind ipv4 0.0.0.0 . If you want to use ipv6, addr can be "::" and port 0.
-int socket_server_udp(struct socket_server *, uintptr_t opaque, const char * addr, int port);
+int socket_server_udp (struct socket_server *, uintptr_t opaque, const char *addr, int port);
 // set default dest address, return 0 when success
-int socket_server_udp_connect(struct socket_server *, int id, const char * addr, int port);
+int socket_server_udp_connect (struct socket_server *, int id, const char *addr, int port);
 // If the socket_udp_address is NULL, use last call socket_server_udp_connect address instead
 // You can also use socket_server_send 
-int socket_server_udp_send(struct socket_server *, const struct socket_udp_address *, struct socket_sendbuffer *buffer);
+int socket_server_udp_send (struct socket_server *, const struct socket_udp_address *, struct socket_sendbuffer *buffer);
 // extract the address of the message, struct socket_message * should be SOCKET_UDP
-const struct socket_udp_address * socket_server_udp_address(struct socket_server *, struct socket_message *, int *addrsz);
+const struct socket_udp_address *socket_server_udp_address (struct socket_server *, struct socket_message *, int *addrsz);
 
-struct socket_object_interface {
-	const void * (*buffer)(const void *);
-	size_t (*size)(const void *);
-	void (*free)(void *);
+struct socket_object_interface
+{
+	const void *(*buffer) (const void *);
+	size_t (*size) (const void *);
+	void (*free) (void *);
 };
 
 // if you send package with type SOCKET_BUFFER_OBJECT, use soi.
-void socket_server_userobject(struct socket_server *, struct socket_object_interface *soi);
+void socket_server_userobject (struct socket_server *, struct socket_object_interface *soi);
 
-struct socket_info * socket_server_info(struct socket_server *);
+struct socket_info *socket_server_info (struct socket_server *);
 
 #endif

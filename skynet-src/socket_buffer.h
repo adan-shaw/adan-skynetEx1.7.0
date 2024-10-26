@@ -7,7 +7,8 @@
 #define SOCKET_BUFFER_OBJECT 1
 #define SOCKET_BUFFER_RAWPOINTER 2
 
-struct socket_sendbuffer {
+struct socket_sendbuffer
+{
 	int id;
 	int type;
 	const void *buffer;
