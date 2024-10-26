@@ -2,18 +2,21 @@ include platform.mk
 
 LUA_CLIB_PATH ?= luaclib
 CSERVICE_PATH ?= cservice
-
 SKYNET_BUILD_PATH ?= .
+
+
 
 # 发行版
 CFLAGS = -O2 -Wall -I$(LUA_INC) $(MYCFLAGS) -DNDEBUG
 # debug 版
 #CFLAGS = -O2 -Wall -I$(LUA_INC) $(MYCFLAGS) $(MYDEBUG) 
+#CFLAGS += -DUSE_PTHREAD_LOCK
 
-# CFLAGS += -DUSE_PTHREAD_LOCK
 
+
+#
 # lua
-
+#
 LUA_STATICLIB := 3rd/lua/liblua.a
 LUA_LIB ?= $(LUA_STATICLIB)
 LUA_INC ?= 3rd/lua
@@ -21,14 +24,20 @@ LUA_INC ?= 3rd/lua
 $(LUA_STATICLIB) :
 	cd 3rd/lua && $(MAKE) CC='$(CC) -std=gnu99' $(PLAT)
 
-# https : turn on TLS_MODULE to add https support
 
+
+#
+# https : turn on TLS_MODULE to add https support
+#
 # TLS_MODULE=ltls
 TLS_LIB=
 TLS_INC=
 
-# jemalloc
 
+
+#
+# jemalloc
+#
 JEMALLOC_STATICLIB := 3rd/jemalloc/lib/libjemalloc_pic.a
 JEMALLOC_INC := 3rd/jemalloc/include/jemalloc
 
@@ -52,8 +61,11 @@ jemalloc : $(MALLOC_STATICLIB)
 update3rd :
 	rm -rf 3rd/jemalloc && git submodule update --init
 
-# skynet
 
+
+#
+# skynet
+#
 CSERVICE = snlua logger gate harbor
 LUA_CLIB = skynet \
   client \
@@ -79,6 +91,11 @@ SKYNET_SRC = skynet_main.c skynet_handle.c skynet_module.c skynet_mq.c \
   skynet_harbor.c skynet_env.c skynet_monitor.c skynet_socket.c socket_server.c \
   malloc_hook.c skynet_daemon.c skynet_log.c
 
+
+
+#
+# all
+#
 all : \
   $(SKYNET_BUILD_PATH)/skynet \
   $(foreach v, $(CSERVICE), $(CSERVICE_PATH)/$(v).so) \

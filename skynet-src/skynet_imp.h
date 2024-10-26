@@ -19,6 +19,6 @@ struct skynet_config
 #define THREAD_TIMER 3
 #define THREAD_MONITOR 4
 
-void skynet_start (struct skynet_config *config);
+void skynet_start(struct skynet_config *config);
 
 #endif

@@ -20,32 +20,32 @@ struct hashid
 	struct hashid_node **hash;
 };
 
-static void hashid_init (struct hashid *hi, int max)
+static void hashid_init(struct hashid *hi, int max)
 {
 	int i;
 	int hashcap;
 	hashcap = 16;
-	while (hashcap < max)
+	while(hashcap < max)
 	{
 		hashcap *= 2;
 	}
 	hi->hashmod = hashcap - 1;
 	hi->cap = max;
 	hi->count = 0;
-	hi->id = skynet_malloc (max * sizeof (struct hashid_node));
-	for (i = 0; i < max; i++)
+	hi->id = skynet_malloc(max * sizeof(struct hashid_node));
+	for(i = 0; i < max; i++)
 	{
 		hi->id[i].id = -1;
 		hi->id[i].next = NULL;
 	}
-	hi->hash = skynet_malloc (hashcap * sizeof (struct hashid_node *));
-	memset (hi->hash, 0, hashcap * sizeof (struct hashid_node *));
+	hi->hash = skynet_malloc(hashcap * sizeof(struct hashid_node *));
+	memset(hi->hash, 0, hashcap * sizeof(struct hashid_node *));
 }
 
-static void hashid_clear (struct hashid *hi)
+static void hashid_clear(struct hashid *hi)
 {
-	skynet_free (hi->id);
-	skynet_free (hi->hash);
+	skynet_free(hi->id);
+	skynet_free(hi->hash);
 	hi->id = NULL;
 	hi->hash = NULL;
 	hi->hashmod = 1;
@@ -53,33 +53,33 @@ static void hashid_clear (struct hashid *hi)
 	hi->count = 0;
 }
 
-static int hashid_lookup (struct hashid *hi, int id)
+static int hashid_lookup(struct hashid *hi, int id)
 {
 	int h = id & hi->hashmod;
 	struct hashid_node *c = hi->hash[h];
-	while (c)
+	while(c)
 	{
-		if (c->id == id)
+		if(c->id == id)
 			return c - hi->id;
 		c = c->next;
 	}
 	return -1;
 }
 
-static int hashid_remove (struct hashid *hi, int id)
+static int hashid_remove(struct hashid *hi, int id)
 {
 	int h = id & hi->hashmod;
 	struct hashid_node *c = hi->hash[h];
-	if (c == NULL)
+	if(c == NULL)
 		return -1;
-	if (c->id == id)
+	if(c->id == id)
 	{
 		hi->hash[h] = c->next;
 		goto _clear;
 	}
-	while (c->next)
+	while(c->next)
 	{
-		if (c->next->id == id)
+		if(c->next->id == id)
 		{
 			struct hashid_node *temp = c->next;
 			c->next = temp->next;
@@ -96,25 +96,25 @@ _clear:
 	return c - hi->id;
 }
 
-static int hashid_insert (struct hashid *hi, int id)
+static int hashid_insert(struct hashid *hi, int id)
 {
 	struct hashid_node *c = NULL;
 	int i;
-	for (i = 0; i < hi->cap; i++)
+	for(i = 0; i < hi->cap; i++)
 	{
-		int index = (i + id) % hi->cap;
-		if (hi->id[index].id == -1)
+		int index =(i + id) % hi->cap;
+		if(hi->id[index].id == -1)
 		{
 			c = &hi->id[index];
 			break;
 		}
 	}
-	assert (c);
+	assert(c);
 	++hi->count;
 	c->id = id;
-	assert (c->next == NULL);
+	assert(c->next == NULL);
 	int h = id & hi->hashmod;
-	if (hi->hash[h])
+	if(hi->hash[h])
 	{
 		c->next = hi->hash[h];
 	}
@@ -123,7 +123,7 @@ static int hashid_insert (struct hashid *hi, int id)
 	return c - hi->id;
 }
 
-static inline int hashid_full (struct hashid *hi)
+static inline int hashid_full(struct hashid *hi)
 {
 	return hi->count == hi->cap;
 }

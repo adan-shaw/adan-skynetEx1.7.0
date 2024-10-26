@@ -16,33 +16,33 @@ struct skynet_monitor
 	uint32_t destination;
 };
 
-struct skynet_monitor *skynet_monitor_new ()
+struct skynet_monitor *skynet_monitor_new()
 {
-	struct skynet_monitor *ret = skynet_malloc (sizeof (*ret));
-	memset (ret, 0, sizeof (*ret));
+	struct skynet_monitor *ret = skynet_malloc(sizeof(*ret));
+	memset(ret, 0, sizeof(*ret));
 	return ret;
 }
 
-void skynet_monitor_delete (struct skynet_monitor *sm)
+void skynet_monitor_delete(struct skynet_monitor *sm)
 {
-	skynet_free (sm);
+	skynet_free(sm);
 }
 
-void skynet_monitor_trigger (struct skynet_monitor *sm, uint32_t source, uint32_t destination)
+void skynet_monitor_trigger(struct skynet_monitor *sm, uint32_t source, uint32_t destination)
 {
 	sm->source = source;
 	sm->destination = destination;
-	ATOM_FINC (&sm->version);
+	ATOM_FINC(&sm->version);
 }
 
-void skynet_monitor_check (struct skynet_monitor *sm)
+void skynet_monitor_check(struct skynet_monitor *sm)
 {
-	if (sm->version == sm->check_version)
+	if(sm->version == sm->check_version)
 	{
-		if (sm->destination)
+		if(sm->destination)
 		{
-			skynet_context_endless (sm->destination);
-			skynet_error (NULL, "A message from [ :%08x ] to [ :%08x ] maybe in an endless loop (version = %d)", sm->source, sm->destination, sm->version);
+			skynet_context_endless(sm->destination);
+			skynet_error(NULL, "A message from [ :%08x ] to [ :%08x ] maybe in an endless loop(version = %d)", sm->source, sm->destination, sm->version);
 		}
 	}
 	else

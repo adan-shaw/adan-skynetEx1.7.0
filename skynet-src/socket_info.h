@@ -26,7 +26,7 @@ struct socket_info
 	struct socket_info *next;
 };
 
-struct socket_info *socket_info_create (struct socket_info *last);
-void socket_info_release (struct socket_info *);
+struct socket_info *socket_info_create(struct socket_info *last);
+void socket_info_release(struct socket_info *);
 
 #endif

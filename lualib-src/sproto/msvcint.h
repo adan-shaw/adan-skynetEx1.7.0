@@ -4,7 +4,7 @@
 #ifdef _MSC_VER
 #define inline __inline
 #ifndef _MSC_STDINT_H_
-#if (_MSC_VER < 1300)
+#if(_MSC_VER < 1300)
 typedef signed char int8_t;
 typedef signed short int16_t;
 typedef signed int int32_t;

@@ -25,7 +25,7 @@
 #define TYPE_INIT 7
 
 /*
-	Each package is uint16 + data , uint16 (serialized in big-endian) is the number of bytes comprising the data .
+	Each package is uint16 + data , uint16(serialized in big-endian) is the number of bytes comprising the data .
  */
 
 struct netpack
@@ -52,70 +52,70 @@ struct queue
 	struct netpack queue[QUEUESIZE];
 };
 
-static void clear_list (struct uncomplete *uc)
+static void clear_list(struct uncomplete *uc)
 {
-	while (uc)
+	while(uc)
 	{
-		skynet_free (uc->pack.buffer);
+		skynet_free(uc->pack.buffer);
 		void *tmp = uc;
 		uc = uc->next;
-		skynet_free (tmp);
+		skynet_free(tmp);
 	}
 }
 
-static int lclear (lua_State * L)
+static int lclear(lua_State * L)
 {
-	struct queue *q = lua_touserdata (L, 1);
-	if (q == NULL)
+	struct queue *q = lua_touserdata(L, 1);
+	if(q == NULL)
 	{
 		return 0;
 	}
 	int i;
-	for (i = 0; i < HASHSIZE; i++)
+	for(i = 0; i < HASHSIZE; i++)
 	{
-		clear_list (q->hash[i]);
+		clear_list(q->hash[i]);
 		q->hash[i] = NULL;
 	}
-	if (q->head > q->tail)
+	if(q->head > q->tail)
 	{
 		q->tail += q->cap;
 	}
-	for (i = q->head; i < q->tail; i++)
+	for(i = q->head; i < q->tail; i++)
 	{
 		struct netpack *np = &q->queue[i % q->cap];
-		skynet_free (np->buffer);
+		skynet_free(np->buffer);
 	}
 	q->head = q->tail = 0;
 
 	return 0;
 }
 
-static inline int hash_fd (int fd)
+static inline int hash_fd(int fd)
 {
 	int a = fd >> 24;
 	int b = fd >> 12;
 	int c = fd;
-	return (int) (((uint32_t) (a + b + c)) % HASHSIZE);
+	return(int)(((uint32_t)(a + b + c)) % HASHSIZE);
 }
 
-static struct uncomplete *find_uncomplete (struct queue *q, int fd)
+static struct uncomplete *find_uncomplete(struct queue *q, int fd)
 {
-	if (q == NULL)
+	if(q == NULL)
 		return NULL;
-	int h = hash_fd (fd);
+	int h = hash_fd(fd);
 	struct uncomplete *uc = q->hash[h];
-	if (uc == NULL)
+	if(uc == NULL)
 		return NULL;
-	if (uc->pack.id == fd)
+	if(uc->pack.id == fd)
 	{
 		q->hash[h] = uc->next;
 		return uc;
 	}
 	struct uncomplete *last = uc;
-	while (last->next)
+	while(last->next)
 	{
 		uc = last->next;
-		if (uc->pack.id == fd)
+		if(uc->pack.id == fd)
 		{
 			last->next = uc->next;
 			return uc;
@@ -125,70 +125,70 @@ static struct uncomplete *find_uncomplete (struct queue *q, int fd)
 	return NULL;
 }
 
-static struct queue *get_queue (lua_State * L)
+static struct queue *get_queue(lua_State * L)
 {
-	struct queue *q = lua_touserdata (L, 1);
-	if (q == NULL)
+	struct queue *q = lua_touserdata(L, 1);
+	if(q == NULL)
 	{
-		q = lua_newuserdatauv (L, sizeof (struct queue), 0);
+		q = lua_newuserdatauv(L, sizeof(struct queue), 0);
 		q->cap = QUEUESIZE;
 		q->head = 0;
 		q->tail = 0;
 		int i;
-		for (i = 0; i < HASHSIZE; i++)
+		for(i = 0; i < HASHSIZE; i++)
 		{
 			q->hash[i] = NULL;
 		}
-		lua_replace (L, 1);
+		lua_replace(L, 1);
 	}
 	return q;
 }
 
-static void expand_queue (lua_State * L, struct queue *q)
+static void expand_queue(lua_State * L, struct queue *q)
 {
-	struct queue *nq = lua_newuserdatauv (L, sizeof (struct queue) + q->cap * sizeof (struct netpack), 0);
+	struct queue *nq = lua_newuserdatauv(L, sizeof(struct queue) + q->cap * sizeof(struct netpack), 0);
 	nq->cap = q->cap + QUEUESIZE;
 	nq->head = 0;
 	nq->tail = q->cap;
-	memcpy (nq->hash, q->hash, sizeof (nq->hash));
-	memset (q->hash, 0, sizeof (q->hash));
+	memcpy(nq->hash, q->hash, sizeof(nq->hash));
+	memset(q->hash, 0, sizeof(q->hash));
 	int i;
-	for (i = 0; i < q->cap; i++)
+	for(i = 0; i < q->cap; i++)
 	{
-		int idx = (q->head + i) % q->cap;
+		int idx =(q->head + i) % q->cap;
 		nq->queue[i] = q->queue[idx];
 	}
 	q->head = q->tail = 0;
-	lua_replace (L, 1);
+	lua_replace(L, 1);
 }
 
-static void push_data (lua_State * L, int fd, void *buffer, int size, int clone)
+static void push_data(lua_State * L, int fd, void *buffer, int size, int clone)
 {
-	if (clone)
+	if(clone)
 	{
-		void *tmp = skynet_malloc (size);
-		memcpy (tmp, buffer, size);
+		void *tmp = skynet_malloc(size);
+		memcpy(tmp, buffer, size);
 		buffer = tmp;
 	}
-	struct queue *q = get_queue (L);
+	struct queue *q = get_queue(L);
 	struct netpack *np = &q->queue[q->tail];
-	if (++q->tail >= q->cap)
+	if(++q->tail >= q->cap)
 		q->tail -= q->cap;
 	np->id = fd;
 	np->buffer = buffer;
 	np->size = size;
-	if (q->head == q->tail)
+	if(q->head == q->tail)
 	{
-		expand_queue (L, q);
+		expand_queue(L, q);
 	}
 }
 
-static struct uncomplete *save_uncomplete (lua_State * L, int fd)
+static struct uncomplete *save_uncomplete(lua_State * L, int fd)
 {
-	struct queue *q = get_queue (L);
-	int h = hash_fd (fd);
-	struct uncomplete *uc = skynet_malloc (sizeof (struct uncomplete));
-	memset (uc, 0, sizeof (*uc));
+	struct queue *q = get_queue(L);
+	int h = hash_fd(fd);
+	struct uncomplete *uc = skynet_malloc(sizeof(struct uncomplete));
+	memset(uc, 0, sizeof(*uc));
 	uc->next = q->hash[h];
 	uc->pack.id = fd;
 	q->hash[h] = uc;
@@ -196,164 +196,164 @@ static struct uncomplete *save_uncomplete (lua_State * L, int fd)
 	return uc;
 }
 
-static inline int read_size (uint8_t * buffer)
+static inline int read_size(uint8_t * buffer)
 {
-	int r = (int) buffer[0] << 8 | (int) buffer[1];
+	int r =(int) buffer[0] << 8 |(int) buffer[1];
 	return r;
 }
 
-static void push_more (lua_State * L, int fd, uint8_t * buffer, int size)
+static void push_more(lua_State * L, int fd, uint8_t * buffer, int size)
 {
-	if (size == 1)
+	if(size == 1)
 	{
-		struct uncomplete *uc = save_uncomplete (L, fd);
+		struct uncomplete *uc = save_uncomplete(L, fd);
 		uc->read = -1;
 		uc->header = *buffer;
 		return;
 	}
-	int pack_size = read_size (buffer);
+	int pack_size = read_size(buffer);
 	buffer += 2;
 	size -= 2;
 
-	if (size < pack_size)
+	if(size < pack_size)
 	{
-		struct uncomplete *uc = save_uncomplete (L, fd);
+		struct uncomplete *uc = save_uncomplete(L, fd);
 		uc->read = size;
 		uc->pack.size = pack_size;
-		uc->pack.buffer = skynet_malloc (pack_size);
-		memcpy (uc->pack.buffer, buffer, size);
+		uc->pack.buffer = skynet_malloc(pack_size);
+		memcpy(uc->pack.buffer, buffer, size);
 		return;
 	}
-	push_data (L, fd, buffer, pack_size, 1);
+	push_data(L, fd, buffer, pack_size, 1);
 
 	buffer += pack_size;
 	size -= pack_size;
-	if (size > 0)
+	if(size > 0)
 	{
-		push_more (L, fd, buffer, size);
+		push_more(L, fd, buffer, size);
 	}
 }
 
-static void close_uncomplete (lua_State * L, int fd)
+static void close_uncomplete(lua_State * L, int fd)
 {
-	struct queue *q = lua_touserdata (L, 1);
-	struct uncomplete *uc = find_uncomplete (q, fd);
-	if (uc)
+	struct queue *q = lua_touserdata(L, 1);
+	struct uncomplete *uc = find_uncomplete(q, fd);
+	if(uc)
 	{
-		skynet_free (uc->pack.buffer);
-		skynet_free (uc);
+		skynet_free(uc->pack.buffer);
+		skynet_free(uc);
 	}
 }
 
-static int filter_data_ (lua_State * L, int fd, uint8_t * buffer, int size)
+static int filter_data_(lua_State * L, int fd, uint8_t * buffer, int size)
 {
-	struct queue *q = lua_touserdata (L, 1);
-	struct uncomplete *uc = find_uncomplete (q, fd);
-	if (uc)
+	struct queue *q = lua_touserdata(L, 1);
+	struct uncomplete *uc = find_uncomplete(q, fd);
+	if(uc)
 	{
-		// fill uncomplete
-		if (uc->read < 0)
+		//fill uncomplete
+		if(uc->read < 0)
 		{
-			// read size
-			assert (uc->read == -1);
+			//read size
+			assert(uc->read == -1);
 			int pack_size = *buffer;
 			pack_size |= uc->header << 8;
 			++buffer;
 			--size;
 			uc->pack.size = pack_size;
-			uc->pack.buffer = skynet_malloc (pack_size);
+			uc->pack.buffer = skynet_malloc(pack_size);
 			uc->read = 0;
 		}
 		int need = uc->pack.size - uc->read;
-		if (size < need)
+		if(size < need)
 		{
-			memcpy (uc->pack.buffer + uc->read, buffer, size);
+			memcpy(uc->pack.buffer + uc->read, buffer, size);
 			uc->read += size;
-			int h = hash_fd (fd);
+			int h = hash_fd(fd);
 			uc->next = q->hash[h];
 			q->hash[h] = uc;
 			return 1;
 		}
-		memcpy (uc->pack.buffer + uc->read, buffer, need);
+		memcpy(uc->pack.buffer + uc->read, buffer, need);
 		buffer += need;
 		size -= need;
-		if (size == 0)
+		if(size == 0)
 		{
-			lua_pushvalue (L, lua_upvalueindex (TYPE_DATA));
-			lua_pushinteger (L, fd);
-			lua_pushlightuserdata (L, uc->pack.buffer);
-			lua_pushinteger (L, uc->pack.size);
-			skynet_free (uc);
+			lua_pushvalue(L, lua_upvalueindex(TYPE_DATA));
+			lua_pushinteger(L, fd);
+			lua_pushlightuserdata(L, uc->pack.buffer);
+			lua_pushinteger(L, uc->pack.size);
+			skynet_free(uc);
 			return 5;
 		}
-		// more data
-		push_data (L, fd, uc->pack.buffer, uc->pack.size, 0);
-		skynet_free (uc);
-		push_more (L, fd, buffer, size);
-		lua_pushvalue (L, lua_upvalueindex (TYPE_MORE));
+		//more data
+		push_data(L, fd, uc->pack.buffer, uc->pack.size, 0);
+		skynet_free(uc);
+		push_more(L, fd, buffer, size);
+		lua_pushvalue(L, lua_upvalueindex(TYPE_MORE));
 		return 2;
 	}
 	else
 	{
-		if (size == 1)
+		if(size == 1)
 		{
-			struct uncomplete *uc = save_uncomplete (L, fd);
+			struct uncomplete *uc = save_uncomplete(L, fd);
 			uc->read = -1;
 			uc->header = *buffer;
 			return 1;
 		}
-		int pack_size = read_size (buffer);
+		int pack_size = read_size(buffer);
 		buffer += 2;
 		size -= 2;
 
-		if (size < pack_size)
+		if(size < pack_size)
 		{
-			struct uncomplete *uc = save_uncomplete (L, fd);
+			struct uncomplete *uc = save_uncomplete(L, fd);
 			uc->read = size;
 			uc->pack.size = pack_size;
-			uc->pack.buffer = skynet_malloc (pack_size);
-			memcpy (uc->pack.buffer, buffer, size);
+			uc->pack.buffer = skynet_malloc(pack_size);
+			memcpy(uc->pack.buffer, buffer, size);
 			return 1;
 		}
-		if (size == pack_size)
+		if(size == pack_size)
 		{
-			// just one package
-			lua_pushvalue (L, lua_upvalueindex (TYPE_DATA));
-			lua_pushinteger (L, fd);
-			void *result = skynet_malloc (pack_size);
-			memcpy (result, buffer, size);
-			lua_pushlightuserdata (L, result);
-			lua_pushinteger (L, size);
+			//just one package
+			lua_pushvalue(L, lua_upvalueindex(TYPE_DATA));
+			lua_pushinteger(L, fd);
+			void *result = skynet_malloc(pack_size);
+			memcpy(result, buffer, size);
+			lua_pushlightuserdata(L, result);
+			lua_pushinteger(L, size);
 			return 5;
 		}
-		// more data
-		push_data (L, fd, buffer, pack_size, 1);
+		//more data
+		push_data(L, fd, buffer, pack_size, 1);
 		buffer += pack_size;
 		size -= pack_size;
-		push_more (L, fd, buffer, size);
-		lua_pushvalue (L, lua_upvalueindex (TYPE_MORE));
+		push_more(L, fd, buffer, size);
+		lua_pushvalue(L, lua_upvalueindex(TYPE_MORE));
 		return 2;
 	}
 }
 
-static inline int filter_data (lua_State * L, int fd, uint8_t * buffer, int size)
+static inline int filter_data(lua_State * L, int fd, uint8_t * buffer, int size)
 {
-	int ret = filter_data_ (L, fd, buffer, size);
-	// buffer is the data of socket message, it malloc at socket_server.c : function forward_message .
-	// it should be free before return,
-	skynet_free (buffer);
+	int ret = filter_data_(L, fd, buffer, size);
+	//buffer is the data of socket message, it malloc at socket_server.c : function forward_message .
+	//it should be free before return,
+	skynet_free(buffer);
 	return ret;
 }
 
-static void pushstring (lua_State * L, const char *msg, int size)
+static void pushstring(lua_State * L, const char *msg, int size)
 {
-	if (msg)
+	if(msg)
 	{
-		lua_pushlstring (L, msg, size);
+		lua_pushlstring(L, msg, size);
 	}
 	else
 	{
-		lua_pushliteral (L, "");
+		lua_pushliteral(L, "");
 	}
 }
 
@@ -367,61 +367,61 @@ static void pushstring (lua_State * L, const char *msg, int size)
 		integer fd
 		string msg | lightuserdata/integer
  */
-static int lfilter (lua_State * L)
+static int lfilter(lua_State * L)
 {
-	struct skynet_socket_message *message = lua_touserdata (L, 2);
-	int size = luaL_checkinteger (L, 3);
+	struct skynet_socket_message *message = lua_touserdata(L, 2);
+	int size = luaL_checkinteger(L, 3);
 	char *buffer = message->buffer;
-	if (buffer == NULL)
+	if(buffer == NULL)
 	{
-		buffer = (char *) (message + 1);
-		size -= sizeof (*message);
+		buffer =(char *)(message + 1);
+		size -= sizeof(*message);
 	}
 	else
 	{
 		size = -1;
 	}
 
-	lua_settop (L, 1);
+	lua_settop(L, 1);
 
-	switch (message->type)
+	switch(message->type)
 	{
 	case SKYNET_SOCKET_TYPE_DATA:
-		// ignore listen id (message->id)
-		assert (size == -1);				// never padding string
-		return filter_data (L, message->id, (uint8_t *) buffer, message->ud);
+		//ignore listen id(message->id)
+		assert(size == -1);				//never padding string
+		return filter_data(L, message->id,(uint8_t *) buffer, message->ud);
 	case SKYNET_SOCKET_TYPE_CONNECT:
-		lua_pushvalue (L, lua_upvalueindex (TYPE_INIT));
-		lua_pushinteger (L, message->id);
-		lua_pushlstring (L, buffer, size);
-		lua_pushinteger (L, message->ud);
+		lua_pushvalue(L, lua_upvalueindex(TYPE_INIT));
+		lua_pushinteger(L, message->id);
+		lua_pushlstring(L, buffer, size);
+		lua_pushinteger(L, message->ud);
 		return 5;
 	case SKYNET_SOCKET_TYPE_CLOSE:
-		// no more data in fd (message->id)
-		close_uncomplete (L, message->id);
-		lua_pushvalue (L, lua_upvalueindex (TYPE_CLOSE));
-		lua_pushinteger (L, message->id);
+		//no more data in fd(message->id)
+		close_uncomplete(L, message->id);
+		lua_pushvalue(L, lua_upvalueindex(TYPE_CLOSE));
+		lua_pushinteger(L, message->id);
 		return 3;
 	case SKYNET_SOCKET_TYPE_ACCEPT:
-		lua_pushvalue (L, lua_upvalueindex (TYPE_OPEN));
-		// ignore listen id (message->id);
-		lua_pushinteger (L, message->ud);
-		pushstring (L, buffer, size);
+		lua_pushvalue(L, lua_upvalueindex(TYPE_OPEN));
+		//ignore listen id(message->id);
+		lua_pushinteger(L, message->ud);
+		pushstring(L, buffer, size);
 		return 4;
 	case SKYNET_SOCKET_TYPE_ERROR:
-		// no more data in fd (message->id)
-		close_uncomplete (L, message->id);
-		lua_pushvalue (L, lua_upvalueindex (TYPE_ERROR));
-		lua_pushinteger (L, message->id);
-		pushstring (L, buffer, size);
+		//no more data in fd(message->id)
+		close_uncomplete(L, message->id);
+		lua_pushvalue(L, lua_upvalueindex(TYPE_ERROR));
+		lua_pushinteger(L, message->id);
+		pushstring(L, buffer, size);
 		return 4;
 	case SKYNET_SOCKET_TYPE_WARNING:
-		lua_pushvalue (L, lua_upvalueindex (TYPE_WARNING));
-		lua_pushinteger (L, message->id);
-		lua_pushinteger (L, message->ud);
+		lua_pushvalue(L, lua_upvalueindex(TYPE_WARNING));
+		lua_pushinteger(L, message->id);
+		lua_pushinteger(L, message->ud);
 		return 4;
 	default:
-		// never get here
+		//never get here
 		return 1;
 	}
 }
@@ -433,19 +433,19 @@ static int lfilter (lua_State * L)
 		lightuserdata msg
 		integer size
  */
-static int lpop (lua_State * L)
+static int lpop(lua_State * L)
 {
-	struct queue *q = lua_touserdata (L, 1);
-	if (q == NULL || q->head == q->tail)
+	struct queue *q = lua_touserdata(L, 1);
+	if(q == NULL || q->head == q->tail)
 		return 0;
 	struct netpack *np = &q->queue[q->head];
-	if (++q->head >= q->cap)
+	if(++q->head >= q->cap)
 	{
 		q->head = 0;
 	}
-	lua_pushinteger (L, np->id);
-	lua_pushlightuserdata (L, np->buffer);
-	lua_pushinteger (L, np->size);
+	lua_pushinteger(L, np->id);
+	lua_pushlightuserdata(L, np->buffer);
+	lua_pushinteger(L, np->size);
 
 	return 3;
 }
@@ -456,65 +456,65 @@ static int lpop (lua_State * L)
 	lightuserdata/integer
  */
 
-static const char *tolstring (lua_State * L, size_t *sz, int index)
+static const char *tolstring(lua_State * L, size_t *sz, int index)
 {
 	const char *ptr;
-	if (lua_isuserdata (L, index))
+	if(lua_isuserdata(L, index))
 	{
-		ptr = (const char *) lua_touserdata (L, index);
-		*sz = (size_t) luaL_checkinteger (L, index + 1);
+		ptr =(const char *) lua_touserdata(L, index);
+		*sz =(size_t) luaL_checkinteger(L, index + 1);
 	}
 	else
 	{
-		ptr = luaL_checklstring (L, index, sz);
+		ptr = luaL_checklstring(L, index, sz);
 	}
 	return ptr;
 }
 
-static inline void write_size (uint8_t * buffer, int len)
+static inline void write_size(uint8_t * buffer, int len)
 {
-	buffer[0] = (len >> 8) & 0xff;
+	buffer[0] =(len >> 8) & 0xff;
 	buffer[1] = len & 0xff;
 }
 
-static int lpack (lua_State * L)
+static int lpack(lua_State * L)
 {
 	size_t len;
-	const char *ptr = tolstring (L, &len, 1);
-	if (len >= 0x10000)
+	const char *ptr = tolstring(L, &len, 1);
+	if(len >= 0x10000)
 	{
-		return luaL_error (L, "Invalid size (too long) of data : %d", (int) len);
+		return luaL_error(L, "Invalid size(too long) of data : %d",(int) len);
 	}
 
-	uint8_t *buffer = skynet_malloc (len + 2);
-	write_size (buffer, len);
-	memcpy (buffer + 2, ptr, len);
+	uint8_t *buffer = skynet_malloc(len + 2);
+	write_size(buffer, len);
+	memcpy(buffer + 2, ptr, len);
 
-	lua_pushlightuserdata (L, buffer);
-	lua_pushinteger (L, len + 2);
+	lua_pushlightuserdata(L, buffer);
+	lua_pushinteger(L, len + 2);
 
 	return 2;
 }
 
-static int ltostring (lua_State * L)
+static int ltostring(lua_State * L)
 {
-	void *ptr = lua_touserdata (L, 1);
-	int size = luaL_checkinteger (L, 2);
-	if (ptr == NULL)
+	void *ptr = lua_touserdata(L, 1);
+	int size = luaL_checkinteger(L, 2);
+	if(ptr == NULL)
 	{
-		lua_pushliteral (L, "");
+		lua_pushliteral(L, "");
 	}
 	else
 	{
-		lua_pushlstring (L, (const char *) ptr, size);
-		skynet_free (ptr);
+		lua_pushlstring(L,(const char *) ptr, size);
+		skynet_free(ptr);
 	}
 	return 1;
 }
 
-LUAMOD_API int luaopen_skynet_netpack (lua_State * L)
+LUAMOD_API int luaopen_skynet_netpack(lua_State * L)
 {
-	luaL_checkversion (L);
+	luaL_checkversion(L);
 	luaL_Reg l[] = {
 		{"pop", lpop},
 		{"pack", lpack},
@@ -522,19 +522,19 @@ LUAMOD_API int luaopen_skynet_netpack (lua_State * L)
 		{"tostring", ltostring},
 		{NULL, NULL},
 	};
-	luaL_newlib (L, l);
+	luaL_newlib(L, l);
 
-	// the order is same with macros : TYPE_* (defined top)
-	lua_pushliteral (L, "data");
-	lua_pushliteral (L, "more");
-	lua_pushliteral (L, "error");
-	lua_pushliteral (L, "open");
-	lua_pushliteral (L, "close");
-	lua_pushliteral (L, "warning");
-	lua_pushliteral (L, "init");
+	//the order is same with macros : TYPE_*(defined top)
+	lua_pushliteral(L, "data");
+	lua_pushliteral(L, "more");
+	lua_pushliteral(L, "error");
+	lua_pushliteral(L, "open");
+	lua_pushliteral(L, "close");
+	lua_pushliteral(L, "warning");
+	lua_pushliteral(L, "init");
 
-	lua_pushcclosure (L, lfilter, 7);
-	lua_setfield (L, -2, "filter");
+	lua_pushcclosure(L, lfilter, 7);
+	lua_setfield(L, -2, "filter");
 
 	return 1;
 }
