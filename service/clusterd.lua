@@ -69,7 +69,7 @@ local function open_channel(t, key)
 		else
 			-- trun off the sender
 			succ, err = pcall(skynet.call, c, "lua", "changenode", false)
-						if succ then --trun off failed, wait next index todo turn off
+						if succ then -- trun off failed, wait next index todo turn off
 								node_sender_closed[key] = true
 						end
 		end

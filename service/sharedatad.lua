@@ -2,7 +2,7 @@ local skynet = require "skynet"
 local sharedata = require "skynet.sharedata.corelib"
 local table = table
 local cache = require "skynet.codecache"
-cache.mode "OFF"	-- turn off codecache, because CMD.new may load data file
+cache.mode "OFF" -- turn off codecache, because CMD.new may load data file
 
 local NORET = {}
 local pool = {}
@@ -28,9 +28,9 @@ end
 
 local function collectobj()
 	while true do
-		skynet.sleep(60*100)	-- sleep 1min
+		skynet.sleep(60*100) -- sleep 1min
 		if collect_tick <= 0 then
-			collect_tick = 10	-- reset tick count to 10 min
+			collect_tick = 10 -- reset tick count to 10 min
 			collectgarbage()
 			for obj, v in pairs(objmap) do
 				if v == true then
@@ -122,7 +122,7 @@ function CMD.update(name, t, ...)
 			response(true, newobj)
 		end
 	end
-	collect1min()	-- collect in 1 min
+	collect1min() -- collect in 1 min
 end
 
 local function check_watch(queue)

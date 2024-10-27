@@ -2,7 +2,7 @@ local skynet = require "skynet"
 local gateserver = require "snax.gateserver"
 
 local watchdog
-local connection = {}	-- fd -> connection : { fd , client, agent , ip, mode }
+local connection = {} -- fd -> connection : { fd , client, agent , ip, mode }
 
 skynet.register_protocol {
 	name = "client",

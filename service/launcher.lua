@@ -1,6 +1,6 @@
 local skynet = require "skynet"
 local core = require "skynet.core"
-require "skynet.manager"	-- import manager apis
+require "skynet.manager" -- import manager apis
 local string = string
 
 local services = {}
@@ -81,7 +81,7 @@ function command.REMOVE(_, handle, kill)
 	local response = instance[handle]
 	if response then
 		-- instance is dead
-		response(not kill)	-- return nil to caller of newservice, when kill == false
+		response(not kill) -- return nil to caller of newservice, when kill == false
 		instance[handle] = nil
 		launch_session[handle] = nil
 	end

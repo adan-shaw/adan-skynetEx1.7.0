@@ -22,7 +22,7 @@ local register_name_mt = { __index =
 		else
 			waitco = {}
 			inquery_name[name] = waitco
-			local addr = skynet.call(clusterd, "lua", "queryname", name:sub(2))	-- name must be '@xxxx'
+			local addr = skynet.call(clusterd, "lua", "queryname", name:sub(2)) -- name must be '@xxxx'
 			if addr then
 				self[name] = addr
 			end
@@ -44,7 +44,7 @@ local register_name = new_register_name()
 local tracetag
 
 local function dispatch_request(_,_,addr, session, msg, sz, padding, is_push)
-	ignoreret()	-- session is fd, don't call skynet.ret
+	ignoreret() -- session is fd, don't call skynet.ret
 	if session == nil then
 		-- trace
 		tracetag = addr
@@ -93,7 +93,7 @@ local function dispatch_request(_,_,addr, session, msg, sz, padding, is_push)
 		if addr then
 			if is_push then
 				skynet.rawsend(addr, "lua", msg, sz)
-				return	-- no response
+				return -- no response
 			else
 				if tracetag then
 					ok , msg, sz = pcall(skynet.tracecall, tracetag, addr, "lua", msg, sz)

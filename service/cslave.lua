@@ -1,7 +1,7 @@
 local skynet = require "skynet"
 local socket = require "skynet.socket"
 local socketdriver = require "skynet.socketdriver"
-require "skynet.manager"	-- import skynet.launch, ...
+require "skynet.manager" -- import skynet.launch, ...
 local table = table
 
 local slaves = {}

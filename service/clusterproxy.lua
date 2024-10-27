@@ -1,6 +1,6 @@
 local skynet = require "skynet"
 local cluster = require "skynet.cluster"
-require "skynet.manager"	-- inject skynet.forward_type
+require "skynet.manager" -- inject skynet.forward_type
 
 local node, address = ...
 
@@ -13,7 +13,7 @@ skynet.register_protocol {
 local forward_map = {
 	[skynet.PTYPE_SNAX] = skynet.PTYPE_SYSTEM,
 	[skynet.PTYPE_LUA] = skynet.PTYPE_SYSTEM,
-	[skynet.PTYPE_RESPONSE] = skynet.PTYPE_RESPONSE,	-- don't free response message
+	[skynet.PTYPE_RESPONSE] = skynet.PTYPE_RESPONSE, -- don't free response message
 }
 
 skynet.forward_type( forward_map ,function()
