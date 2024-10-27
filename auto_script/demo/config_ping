@@ -1,0 +1,12 @@
+-- 启动多少个工作线程
+thread = 8
+
+-- skynet 工作在单节点模式下
+harbor = 0
+
+-- skynet 节点主程序的*.lua 入口文件
+start = "main_ping"
+
+-- lua 服务代码所在的位置(新增path: ./auto_script/demo/?.lua;)
+luaservice = "./service/?.lua;./examples/?.lua;./auto_script/demo/?.lua;"
+
