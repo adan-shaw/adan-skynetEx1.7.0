@@ -31,7 +31,7 @@ skynet.start(function()
 		skynet.call(sub, "lua", "init", channel.channel)
 	end
 
-	dc.set("MCCHANNEL", channel.channel)	-- for multi node test
+	dc.set("MCCHANNEL", channel.channel) -- for multi node test
 
 	print(skynet.address(skynet.self()), "===>", channel)
 	channel:publish("Hello World")

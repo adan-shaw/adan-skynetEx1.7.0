@@ -7,7 +7,7 @@ local function test_service()
 	skynet.start(function()
 		skynet.dispatch("lua", function()
 			skynet.error("Wait for 1s")
-			skynet.sleep(100)	-- response after 1s for any request
+			skynet.sleep(100) -- response after 1s for any request
 			skynet.ret()
 		end)
 	end)

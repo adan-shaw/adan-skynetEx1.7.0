@@ -1,5 +1,5 @@
 local skynet = require "skynet"
-require "skynet.manager"	-- import skynet.register
+require "skynet.manager" -- import skynet.register
 local db = {}
 
 local command = {}
@@ -33,6 +33,6 @@ skynet.start(function()
 			error(string.format("Unknown command %s", tostring(cmd)))
 		end
 	end)
---	skynet.traceproto("lua", false)	-- true off tracelog
+--	skynet.traceproto("lua", false) -- true off tracelog
 	skynet.register "SIMPLEDB"
 end)

@@ -3,8 +3,8 @@ local httpc = require "http.httpc"
 local dns = require "skynet.dns"
 
 local function http_test(protocol)
-	--httpc.dns()	-- set dns server
-	httpc.timeout = 100	-- set timeout 1 second
+	--httpc.dns() -- set dns server
+	httpc.timeout = 100 -- set timeout 1 second
 	print("GET baidu.com")
 	protocol = protocol or "http"
 	local respheader = {}

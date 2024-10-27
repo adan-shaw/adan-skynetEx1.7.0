@@ -15,7 +15,7 @@ end
 local function service_mainfunc(...)
 	local skynet = require "skynet"
 
-	skynet.error(...)	-- (...) passed from service.new
+	skynet.error(...) -- (...) passed from service.new
 
 	local db = {}
 

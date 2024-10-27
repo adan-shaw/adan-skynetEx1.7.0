@@ -10,10 +10,10 @@ skynet.start(function()
 	sharedata.new("foobar", { a=1, b= { "hello",  "world" } })
 
 	skynet.fork(function()
-		skynet.sleep(200)	-- sleep 2s
+		skynet.sleep(200) -- sleep 2s
 		skynet.error("update foobar a = 2")
 		sharedata.update("foobar", { a =2 })
-		skynet.sleep(200)	-- sleep 2s
+		skynet.sleep(200) -- sleep 2s
 		skynet.error("update foobar a = 3")
 		sharedata.update("foobar", { a = 3, b = { "change" } })
 		skynet.sleep(100)
@@ -56,7 +56,7 @@ skynet.start(function()
 	end
 
 	local ok, err = pcall(function()
-		local tmp = { b[1], b[2] }	-- b is invalid , so pcall should failed
+		local tmp = { b[1], b[2] } -- b is invalid , so pcall should failed
 	end)
 
 	if not ok then

@@ -23,15 +23,15 @@ end)
 else
 
 	skynet.start(function()
-		local test = skynet.newservice(SERVICE_NAME, "test")	-- launch self in test mode
+		local test = skynet.newservice(SERVICE_NAME, "test") -- launch self in test mode
 
 		print(pcall(function()
 			skynet.call(test,"lua", "dead call")
 		end))
 
-		local dead = skynet.newservice(SERVICE_NAME, "dead")	-- launch self in dead mode
+		local dead = skynet.newservice(SERVICE_NAME, "dead") -- launch self in dead mode
 
-		skynet.timeout(0, skynet.exit)	-- exit after a while, so the call never return
+		skynet.timeout(0, skynet.exit) -- exit after a while, so the call never return
 		skynet.call(dead, "lua", "would not return")
 	end)
 end

@@ -17,7 +17,7 @@ function server.login_handler(uid, secret)
 	end
 
 	internal_id = internal_id + 1
-	local id = internal_id	-- don't use internal_id directly
+	local id = internal_id -- don't use internal_id directly
 	local username = msgserver.username(uid, id, servername)
 
 	-- you can use a pool to alloc new agent

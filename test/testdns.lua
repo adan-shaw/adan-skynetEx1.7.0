@@ -14,6 +14,6 @@ skynet.start(function()
 		for k,v in ipairs(ips) do
 			print(name,v)
 		end
-		skynet.sleep(500)	-- sleep 5 sec
+		skynet.sleep(500) -- sleep 5 sec
 	end
 end)

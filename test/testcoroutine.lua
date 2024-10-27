@@ -19,7 +19,7 @@ end
 
 local function test(n)
 	local co = coroutine.running()
-	print ("begin", co, coroutine.thread(co))	-- false
+	print ("begin", co, coroutine.thread(co)) -- false
 	skynet.fork(status, co)
 	for i=1,n do
 		skynet.sleep(100)
@@ -40,8 +40,8 @@ local function main()
 end
 
 skynet.start(function()
-	print("Main thead :", coroutine.thread())	-- true
-	print(coroutine.resume(coroutine.running()))	-- always return false
+	print("Main thead :", coroutine.thread()) -- true
+	print(coroutine.resume(coroutine.running())) -- always return false
 
 	profile.start()
 

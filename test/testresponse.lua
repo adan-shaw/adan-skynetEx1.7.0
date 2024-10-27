@@ -9,9 +9,9 @@ local response_queue = {}
 
 local function response()
 	while true do
-		skynet.sleep(100)	-- sleep 1s
+		skynet.sleep(100) -- sleep 1s
 		for k,v in ipairs(response_queue) do
-			v(true, skynet.now())		-- true means succ, false means error
+			v(true, skynet.now()) -- true means succ, false means error
 			response_queue[k] = nil
 		end
 	end

@@ -5,7 +5,7 @@ local function f1()
 	print("====1==== wait hello")
 	print("\t1>",datacenter.wait ("hello"))
 	print("====1==== wait key.foobar")
-	print("\t1>", pcall(datacenter.wait,"key"))	-- will failed, because "key" is a branch
+	print("\t1>", pcall(datacenter.wait,"key")) -- will failed, because "key" is a branch
 	print("\t1>",datacenter.wait ("key", "foobar"))
 end
 
