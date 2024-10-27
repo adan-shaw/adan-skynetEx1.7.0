@@ -113,6 +113,7 @@ $(LUA_CLIB_PATH) :
 $(CSERVICE_PATH) :
 	mkdir $(CSERVICE_PATH)
 
+# 暗哨点2, 修改容易导致makefile 崩溃('  '和'	'在makefile 中不能随意替换的)
 define CSERVICE_TEMP
   $$(CSERVICE_PATH)/$(1).so : service-src/service_$(1).c | $$(CSERVICE_PATH)
 	$$(CC) $$(CFLAGS) $$(SHARED) $$< -o $$@ -Iskynet-src
@@ -145,7 +146,7 @@ clean :
 	rm -f $(SKYNET_BUILD_PATH)/skynet $(CSERVICE_PATH)/*.so $(LUA_CLIB_PATH)/*.so && \
   rm -rf $(SKYNET_BUILD_PATH)/*.dSYM $(CSERVICE_PATH)/*.dSYM $(LUA_CLIB_PATH)/*.dSYM
 
-cleanall: clean
+cleanall : clean
 ifneq (,$(wildcard 3rd/jemalloc/Makefile))
 	cd 3rd/jemalloc && $(MAKE) clean && rm Makefile
 endif
