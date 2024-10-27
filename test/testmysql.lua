@@ -2,78 +2,78 @@ local skynet = require "skynet"
 local mysql = require "skynet.db.mysql"
 
 local function dump(obj)
-    local getIndent, quoteStr, wrapKey, wrapVal, dumpObj
-    getIndent = function(level)
-        return string.rep("\t", level)
-    end
-    quoteStr = function(str)
-        return '"' .. string.gsub(str, '"', '\\"') .. '"'
-    end
-    wrapKey = function(val)
-        if type(val) == "number" then
-            return "[" .. val .. "]"
-        elseif type(val) == "string" then
-            return "[" .. quoteStr(val) .. "]"
-        else
-            return "[" .. tostring(val) .. "]"
-        end
-    end
-    wrapVal = function(val, level)
-        if type(val) == "table" then
-            return dumpObj(val, level)
-        elseif type(val) == "number" then
-            return val
-        elseif type(val) == "string" then
-            return quoteStr(val)
-        else
-            return tostring(val)
-        end
-    end
-    dumpObj = function(obj, level)
-        if type(obj) ~= "table" then
-            return wrapVal(obj)
-        end
-        level = level + 1
-        local tokens = {}
-        tokens[#tokens + 1] = "{"
-        for k, v in pairs(obj) do
-            tokens[#tokens + 1] = getIndent(level) .. wrapKey(k) .. " = " .. wrapVal(v, level) .. ","
-        end
-        tokens[#tokens + 1] = getIndent(level - 1) .. "}"
-        return table.concat(tokens, "\n")
-    end
-    return dumpObj(obj, 0)
+	local getIndent, quoteStr, wrapKey, wrapVal, dumpObj
+	getIndent = function(level)
+		return string.rep("\t", level)
+	end
+	quoteStr = function(str)
+		return '"' .. string.gsub(str, '"', '\\"') .. '"'
+	end
+	wrapKey = function(val)
+		if type(val) == "number" then
+			return "[" .. val .. "]"
+		elseif type(val) == "string" then
+			return "[" .. quoteStr(val) .. "]"
+		else
+			return "[" .. tostring(val) .. "]"
+		end
+	end
+	wrapVal = function(val, level)
+		if type(val) == "table" then
+			return dumpObj(val, level)
+		elseif type(val) == "number" then
+			return val
+		elseif type(val) == "string" then
+			return quoteStr(val)
+		else
+			return tostring(val)
+		end
+	end
+	dumpObj = function(obj, level)
+		if type(obj) ~= "table" then
+			return wrapVal(obj)
+		end
+		level = level + 1
+		local tokens = {}
+		tokens[#tokens + 1] = "{"
+		for k, v in pairs(obj) do
+			tokens[#tokens + 1] = getIndent(level) .. wrapKey(k) .. " = " .. wrapVal(v, level) .. ","
+		end
+		tokens[#tokens + 1] = getIndent(level - 1) .. "}"
+		return table.concat(tokens, "\n")
+	end
+	return dumpObj(obj, 0)
 end
 
 local function test2( db)
-    local i=1
-    while true do
-        local    res = db:query("select * from cats order by id asc")
-        print ( "test2 loop times=" ,i,"\n","query result=",dump( res ) )
-        res = db:query("select * from cats order by id asc")
-        print ( "test2 loop times=" ,i,"\n","query result=",dump( res ) )
+	local i=1
+	while true do
+		local res = db:query("select * from cats order by id asc")
+		print ( "test2 loop times=" ,i,"\n","query result=",dump( res ) )
+		res = db:query("select * from cats order by id asc")
+		print ( "test2 loop times=" ,i,"\n","query result=",dump( res ) )
 
-        skynet.sleep(1000)
-        i=i+1
-    end
+		skynet.sleep(1000)
+		i=i+1
+	end
 end
 local function test3( db)
-    local i=1
-    while true do
-        local    res = db:query("select * from cats order by id asc")
-        print ( "test3 loop times=" ,i,"\n","query result=",dump( res ) )
-        res = db:query("select * from cats order by id asc")
-        print ( "test3 loop times=" ,i,"\n","query result=",dump( res ) )
-        skynet.sleep(1000)
-        i=i+1
-    end
+	local i=1
+	while true do
+		local res = db:query("select * from cats order by id asc")
+		print ( "test3 loop times=" ,i,"\n","query result=",dump( res ) )
+		res = db:query("select * from cats order by id asc")
+		print ( "test3 loop times=" ,i,"\n","query result=",dump( res ) )
+		skynet.sleep(1000)
+		i=i+1
+	end
 end
 local function test4( db)
 	local stmt = db:prepare("SELECT * FROM cats WHERE name=?")
-    print ( "test4 prepare result=",dump( stmt ) )
+	print ( "test4 prepare result=",dump( stmt ) )
 	local res = db:execute(stmt,'Bob')
-    print ( "test4 query result=",dump( res ) )
-    db:stmt_close(stmt)
+	print ( "test4 query result=",dump( res ) )
+	db:stmt_close(stmt)
 end
 
 -- 测试存储过程和blob读写
@@ -118,18 +118,18 @@ local function test_sp_blob(db)
 end
 
 local function test_signed(db)
-    local res = db:query("drop table if exists test_i_u")
-    res = db:query("create table test_i_u (i tinyint primary key, u tinyint unsigned)")
-    print(dump(res))
+	local res = db:query("drop table if exists test_i_u")
+	res = db:query("create table test_i_u (i tinyint primary key, u tinyint unsigned)")
+	print(dump(res))
 
-    res = db:query("insert into test_i_u (i,u) values (-1,1),(127,128),(-127,255)")
-    print(dump(res))
+	res = db:query("insert into test_i_u (i,u) values (-1,1),(127,128),(-127,255)")
+	print(dump(res))
 
-    local prep = "SELECT * FROM test_i_u"
-    local stmt = db:prepare(prep)
-    local res = db:execute(stmt)
-    print("test_i_u: ", dump(res))
-    db:stmt_close(stmt)
+	local prep = "SELECT * FROM test_i_u"
+	local stmt = db:prepare(prep)
+	local res = db:execute(stmt)
+	print("test_i_u: ", dump(res))
+	db:stmt_close(stmt)
 end
 
 skynet.start(function()
@@ -143,7 +143,7 @@ skynet.start(function()
 		database="skynet",
 		user="root",
 		password="123456",
-                charset="utf8mb4",
+				charset="utf8mb4",
 		max_packet_size = 1024 * 1024,
 		on_connect = on_connect
 	})
@@ -153,12 +153,10 @@ skynet.start(function()
 	print("testmysql success to connect to mysql server")
 
 	local res = db:query("drop table if exists cats")
-	res = db:query("create table cats "
-		               .."(id serial primary key, ".. "name varchar(5))")
+	res = db:query("create table cats " .. "(id serial primary key, " .. "name varchar(5))")
 	print( dump( res ) )
 
-	res = db:query("insert into cats (name) "
-                             .. "values (\'Bob\'),(\'\'),(null)")
+	res = db:query("insert into cats (name) " .. "values (\'Bob\'),(\'\'),(null)")
 	print ( dump( res ) )
 
 	res = db:query("select * from cats order by id asc")
@@ -169,9 +167,9 @@ skynet.start(function()
 	
 	test_signed(db)
 
-    -- test in another coroutine
+	-- test in another coroutine
 	skynet.fork( test2, db)
-    skynet.fork( test3, db)
+	skynet.fork( test3, db)
 	skynet.fork( test4, db)
 	-- multiresultset test
 	res = db:query("select * from cats order by id asc ; select * from cats")
@@ -183,18 +181,18 @@ skynet.start(function()
 	local res =  db:query("select * from notexisttable" )
 	print( "bad query test result=" ,dump(res) )
 
-    local i=1
-    while true do
-        local    res = db:query("select * from cats order by id asc")
-        print ( "test1 loop times=" ,i,"\n","query result=",dump( res ) )
+	local i=1
+	while true do
+		local res = db:query("select * from cats order by id asc")
+		print ( "test1 loop times=" ,i,"\n","query result=",dump( res ) )
 
-        res = db:query("select * from cats order by id asc")
-        print ( "test1 loop times=" ,i,"\n","query result=",dump( res ) )
+		res = db:query("select * from cats order by id asc")
+		print ( "test1 loop times=" ,i,"\n","query result=",dump( res ) )
 
 
-        skynet.sleep(1000)
-        i=i+1
-    end
+		skynet.sleep(1000)
+		i=i+1
+	end
 
 	--db:disconnect()
 	--skynet.exit()

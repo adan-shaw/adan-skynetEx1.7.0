@@ -99,7 +99,7 @@ static int packreq_number (lua_State * L, int session, void *msg, uint32_t sz, i
 	{
 		int part = (sz - 1) / MULTI_PART + 1;
 		fill_header (L, buf, 13);
-		buf[2] = is_push ? 0x41 : 1;	// multi push or request
+		buf[2] = is_push ? 0x41 : 1; // multi push or request
 		fill_uint32 (buf + 3, addr);
 		fill_uint32 (buf + 7, (uint32_t) session);
 		fill_uint32 (buf + 11, sz);
@@ -142,7 +142,7 @@ static int packreq_string (lua_State * L, int session, void *msg, uint32_t sz, i
 	{
 		int part = (sz - 1) / MULTI_PART + 1;
 		fill_header (L, buf, 10 + namelen);
-		buf[2] = is_push ? 0xc1 : 0x81;	// multi push or request
+		buf[2] = is_push ? 0xc1 : 0x81; // multi push or request
 		buf[3] = (uint8_t) namelen;
 		memcpy (buf + 4, name, namelen);
 		fill_uint32 (buf + 4 + namelen, (uint32_t) session);
@@ -170,7 +170,7 @@ static void packreq_multi (lua_State * L, int session, void *msg, uint32_t sz)
 		else
 		{
 			s = sz;
-			buf[2] = 3;								// the last multi part
+			buf[2] = 3; // the last multi part
 		}
 		fill_header (L, buf, s + 5);
 		fill_uint32 (buf + 3, (uint32_t) session);
@@ -291,7 +291,7 @@ static int unpackreq_number (lua_State * L, const uint8_t * buf, int sz)
 	if (session == 0)
 	{
 		lua_pushnil (L);
-		lua_pushboolean (L, 1);			// is_push, no reponse
+		lua_pushboolean (L, 1); // is_push, no reponse
 		return 6;
 	}
 
@@ -311,7 +311,7 @@ static int unpackmreq_number (lua_State * L, const uint8_t * buf, int sz, int is
 	lua_pushinteger (L, session);
 	lua_pushnil (L);
 	lua_pushinteger (L, size);
-	lua_pushboolean (L, 1);				// padding multi part
+	lua_pushboolean (L, 1); // padding multi part
 	lua_pushboolean (L, is_push);
 
 	return 6;
@@ -325,7 +325,7 @@ static int unpackmreq_part (lua_State * L, const uint8_t * buf, int sz)
 	}
 	int padding = (buf[0] == 2);
 	uint32_t session = unpack_uint32 (buf + 1);
-	lua_pushboolean (L, 0);				// no address
+	lua_pushboolean (L, 0); // no address
 	lua_pushinteger (L, session);
 	return_buffer (L, (const char *) buf + 5, sz - 5);
 	lua_pushboolean (L, padding);
@@ -357,7 +357,7 @@ static int unpackreq_string (lua_State * L, const uint8_t * buf, int sz)
 	if (session == 0)
 	{
 		lua_pushnil (L);
-		lua_pushboolean (L, 1);			// is_push, no reponse
+		lua_pushboolean (L, 1); // is_push, no reponse
 		return 6;
 	}
 
@@ -381,7 +381,7 @@ static int unpackmreq_string (lua_State * L, const uint8_t * buf, int sz, int is
 	lua_pushinteger (L, session);
 	lua_pushnil (L);
 	lua_pushinteger (L, size);
-	lua_pushboolean (L, 1);				// padding multipart
+	lua_pushboolean (L, 1); // padding multipart
 	lua_pushboolean (L, is_push);
 
 	return 6;
@@ -409,9 +409,9 @@ static int lunpackrequest (lua_State * L)
 	case 0:
 		return unpackreq_number (L, (const uint8_t *) msg, sz);
 	case 1:
-		return unpackmreq_number (L, (const uint8_t *) msg, sz, 0);	// request
+		return unpackmreq_number (L, (const uint8_t *) msg, sz, 0); // request
 	case '\x41':
-		return unpackmreq_number (L, (const uint8_t *) msg, sz, 1);	// push
+		return unpackmreq_number (L, (const uint8_t *) msg, sz, 1); // push
 	case 2:
 	case 3:
 		return unpackmreq_part (L, (const uint8_t *) msg, sz);
@@ -420,9 +420,9 @@ static int lunpackrequest (lua_State * L)
 	case '\x80':
 		return unpackreq_string (L, (const uint8_t *) msg, sz);
 	case '\x81':
-		return unpackmreq_string (L, (const uint8_t *) msg, sz, 0);	// request
+		return unpackmreq_string (L, (const uint8_t *) msg, sz, 0); // request
 	case '\xc1':
-		return unpackmreq_string (L, (const uint8_t *) msg, sz, 1);	// push
+		return unpackmreq_string (L, (const uint8_t *) msg, sz, 1); // push
 	default:
 		return luaL_error (L, "Invalid req package type %d", msg[0]);
 	}

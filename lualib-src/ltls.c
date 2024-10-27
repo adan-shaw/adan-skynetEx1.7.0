@@ -26,9 +26,8 @@ struct ssl_ctx
 	SSL_CTX *ctx;
 };
 
-// static int
-// _ssl_verify_peer(int ok, X509_STORE_CTX* ctx) {
-//     return 1;
+// static int _ssl_verify_peer(int ok, X509_STORE_CTX* ctx) {
+// 	return 1;
 // }
 
 static void _init_bio (lua_State * L, struct tls_context *tls_p, struct ssl_ctx *ctx_p)
@@ -44,14 +43,14 @@ static void _init_bio (lua_State * L, struct tls_context *tls_p, struct ssl_ctx 
 	{
 		luaL_error (L, "new in bio faild");
 	}
-	BIO_set_mem_eof_return (tls_p->in_bio, -1);	/* see: https://www.openssl.org/docs/crypto/BIO_s_mem.html */
+	BIO_set_mem_eof_return (tls_p->in_bio, -1); // see: https://www.openssl.org/docs/crypto/BIO_s_mem.html
 
 	tls_p->out_bio = BIO_new (BIO_s_mem ());
 	if (!tls_p->out_bio)
 	{
 		luaL_error (L, "new out bio faild");
 	}
-	BIO_set_mem_eof_return (tls_p->out_bio, -1);	/* see: https://www.openssl.org/docs/crypto/BIO_s_mem.html */
+	BIO_set_mem_eof_return (tls_p->out_bio, -1); // see: https://www.openssl.org/docs/crypto/BIO_s_mem.html
 
 	SSL_set_bio (tls_p->ssl, tls_p->in_bio, tls_p->out_bio);
 }
@@ -409,7 +408,7 @@ static int lnew_tls (lua_State * L)
 	const char *method = luaL_optstring (L, 1, "nil");
 	struct ssl_ctx *ctx_p = _check_sslctx (L, 2);
 	lua_pushvalue (L, 2);
-	lua_setiuservalue (L, -2, 1);	// set ssl_ctx associated to tls_context
+	lua_setiuservalue (L, -2, 1); // set ssl_ctx associated to tls_context
 
 	if (strcmp (method, "client") == 0)
 	{

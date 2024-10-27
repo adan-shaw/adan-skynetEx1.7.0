@@ -103,7 +103,7 @@ static void wb_init (struct write_block *wb, struct block *b)
 static void wb_free (struct write_block *wb)
 {
 	struct block *blk = wb->head;
-	blk = blk->next;							// the first block is on stack
+	blk = blk->next; // the first block is on stack
 	while (blk)
 	{
 		struct block *next = blk->next;

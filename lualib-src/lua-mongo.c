@@ -157,9 +157,9 @@ static inline void write_length (struct buffer *b, int32_t v, int off)
 struct header_t
 {
 	//int32_t message_length;   // total message size, include this
-	int32_t request_id;						// identifier for this message
-	int32_t response_to;					// requestID from the original request(used in responses from the database)
-	int32_t opcode;								// message type
+	int32_t request_id;					// identifier for this message
+	int32_t response_to;				// requestID from the original request(used in responses from the database)
+	int32_t opcode;							// message type
 
 	int32_t flags;
 };
@@ -282,7 +282,7 @@ LUAMOD_API int luaopen_skynet_mongo_driver (lua_State * L)
 {
 	luaL_checkversion (L);
 	luaL_Reg l[] = {
-		{"reply", unpack_reply},		// 接收响应
+		{"reply", unpack_reply}, // 接收响应
 		{"length", reply_length},
 		{"op_msg", op_msg},
 		{NULL, NULL},

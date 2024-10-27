@@ -408,7 +408,7 @@ static int padding_remove_pkcs7 (const uint8_t * last)
 	{
 		--last;
 		if (*last != padding)
-			return 0;									// invalid
+			return 0; // invalid
 	}
 	return padding;
 }

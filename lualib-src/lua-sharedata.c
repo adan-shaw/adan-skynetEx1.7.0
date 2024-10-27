@@ -206,7 +206,7 @@ static void setarray (struct context *ctx, lua_State * L, int index, int key)
 	struct node n;
 	setvalue (ctx, L, index, &n);
 	struct table *tbl = ctx->tbl;
-	--key;												// base 0
+	--key; // base 0
 	tbl->arraytype[key] = n.valuetype;
 	tbl->array[key] = n.v;
 }
@@ -259,7 +259,7 @@ static void fillnocolliding (lua_State * L, struct context *ctx)
 				n->keyhash = keyhash;
 				n->next = -1;
 				n->nocolliding = 1;
-				setvalue (ctx, L, -1, n);	// set n->v , n->valuetype
+				setvalue (ctx, L, -1, n); // set n->v , n->valuetype
 			}
 		}
 		lua_pop (L, 1);
@@ -302,7 +302,7 @@ static void fillcolliding (lua_State * L, struct context *ctx)
 				n->keytype = keytype;
 				n->keyhash = keyhash;
 				n->nocolliding = 0;
-				setvalue (ctx, L, -1, n);	// set n->v , n->valuetype
+				setvalue (ctx, L, -1, n); // set n->v , n->valuetype
 			}
 		}
 		lua_pop (L, 1);
@@ -464,7 +464,7 @@ static int lnewconf (lua_State * L)
 	luaL_checktype (L, 1, LUA_TTABLE);
 	ctx.L = luaL_newstate ();
 	ctx.tbl = NULL;
-	ctx.string_index = 1;					// 1 reserved for dirty flag
+	ctx.string_index = 1; // 1 reserved for dirty flag
 	if (ctx.L == NULL)
 	{
 		lua_pushliteral (L, "memory error");

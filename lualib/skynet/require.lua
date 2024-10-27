@@ -1,7 +1,7 @@
 -- skynet module two-step initialize . When you require a skynet module :
 -- 1. Run module main function as official lua module behavior.
 -- 2. Run the functions register by skynet.init() during the step 1,
---      unless calling `require` in main thread .
+--	  unless calling `require` in main thread .
 -- If you call `require` in main thread ( service main function ), the functions
 -- registered by skynet.init() do not execute immediately, they will be executed
 -- by skynet.start() before start function.

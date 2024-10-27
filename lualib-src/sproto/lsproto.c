@@ -116,7 +116,7 @@ static int tobooleanx (lua_State * L, int idx, int *isbool)
 
 static const char *tolstringx (lua_State * L, int idx, size_t *len, int *isstring)
 {
-	const char *str = luaL_tolstring (L, idx, len);	// call metamethod, '__tostring' must return a string
+	const char *str = luaL_tolstring (L, idx, len); // call metamethod, '__tostring' must return a string
 	if (isstring)
 	{
 		*isstring = 1;
@@ -387,7 +387,7 @@ static int encode_one (const struct sproto_arg *args, struct encode_ud *self)
 		{
 			size_t sz = 0;
 			int isstring;
-			int type = lua_type (L, -1);	// get the type firstly, lua_tolstring may convert value on stack to string
+			int type = lua_type (L, -1); // get the type firstly, lua_tolstring may convert value on stack to string
 			const char *str = tolstringx (L, -1, &sz, &isstring);
 			if (!isstring)
 			{
@@ -415,7 +415,7 @@ static int encode_one (const struct sproto_arg *args, struct encode_ud *self)
 			sub.iter_table = 0;
 			sub.iter_key = 0;
 			r = sproto_encode (args->subtype, args->value, args->length, encode, &sub);
-			lua_settop (L, top - 1);	// pop the value
+			lua_settop (L, top - 1); // pop the value
 			if (r < 0)
 				return SPROTO_CB_ERROR;
 			return r;
@@ -484,7 +484,7 @@ static int lencode (lua_State * L)
 	{
 		luaL_checktype (L, tbl_index, LUA_TNIL);
 		lua_pushstring (L, "");
-		return 1;										// response nil
+		return 1; // response nil
 	}
 	self.L = L;
 	self.st = st;
@@ -871,7 +871,7 @@ static int lprotocol (lua_State * L)
 	{
 		if (sproto_protoresponse (sp, tag))
 		{
-			lua_pushlightuserdata (L, NULL);	// response nil
+			lua_pushlightuserdata (L, NULL); // response nil
 		}
 		else
 		{

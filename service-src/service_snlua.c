@@ -207,7 +207,7 @@ static int timing_resume (lua_State * L, int co_index, int n)
 #endif
 		lua_pushvalue (L, co_index);
 		lua_pushnumber (L, start_time);
-		lua_rawset (L, lua_upvalueindex (1));	// set start time
+		lua_rawset (L, lua_upvalueindex (1)); // set start time
 	}
 
 	int r = auxresume (L, co, n);

@@ -119,7 +119,7 @@ inline static void *clean_prefix (char *ptr)
 	{
 		fprintf (stderr, "xmalloc: double free in :%08x\n", handle);
 	}
-	assert (dogtag == MEMORY_ALLOCTAG);	// memory out of bounds
+	assert (dogtag == MEMORY_ALLOCTAG); // memory out of bounds
 	dogtag = MEMORY_FREETAG;
 	memcpy (&p->dogtag, &dogtag, sizeof (dogtag));
 #endif

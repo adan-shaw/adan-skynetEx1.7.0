@@ -46,7 +46,7 @@
 #define PROTOCOL_UDPv6 2
 #define PROTOCOL_UNKNOWN 255
 
-#define UDP_ADDRESS_SIZE 19			// ipv6 128bit + port 16bit + 1 byte type
+#define UDP_ADDRESS_SIZE 19 // ipv6 128bit + port 16bit + 1 byte type
 
 #define MAX_UDP_PACKAGE 65535
 
@@ -121,7 +121,7 @@ struct socket
 struct socket_server
 {
 	volatile uint64_t time;
-	int reserve_fd;								// for EMFILE
+	int reserve_fd; // for EMFILE
 	int recvctrl_fd;
 	int sendctrl_fd;
 	int checkctrl;
@@ -227,7 +227,7 @@ struct request_udp
 
 struct request_package
 {
-	uint8_t header[8];						// 6 bytes dummy
+	uint8_t header[8]; // 6 bytes dummy
 	union
 	{
 		char buffer[256];
@@ -288,7 +288,7 @@ static inline int socket_trylock (struct socket_lock *sl)
 	if (sl->count == 0)
 	{
 		if (!spinlock_trylock (sl->lock))
-			return 0;									// lock failed
+			return 0; // lock failed
 	}
 	++sl->count;
 	return 1;
@@ -447,7 +447,7 @@ struct socket_server *socket_server_create (uint64_t time)
 	ss->recvctrl_fd = fd[0];
 	ss->sendctrl_fd = fd[1];
 	ss->checkctrl = 1;
-	ss->reserve_fd = dup (1);			// reserve an extra fd for EMFILE
+	ss->reserve_fd = dup (1); // reserve an extra fd for EMFILE
 
 	for (i = 0; i < MAX_SOCKET; i++)
 	{
@@ -835,13 +835,13 @@ static socklen_t udp_socket_address (struct socket *s, const uint8_t udp_address
 		//memset(&sa->v4, 0, sizeof(sa->v4));
 		sa->s.sa_family = AF_INET;
 		sa->v4.sin_port = port;
-		memcpy (&sa->v4.sin_addr, udp_address + 1 + sizeof (uint16_t), sizeof (sa->v4.sin_addr));	// ipv4 address is 32 bits
+		memcpy (&sa->v4.sin_addr, udp_address + 1 + sizeof (uint16_t), sizeof (sa->v4.sin_addr)); // ipv4 address is 32 bits
 		return sizeof (sa->v4);
 	case PROTOCOL_UDPv6:
 		//memset(&sa->v6, 0, sizeof(sa->v6));
 		sa->s.sa_family = AF_INET6;
 		sa->v6.sin6_port = port;
-		memcpy (&sa->v6.sin6_addr, udp_address + 1 + sizeof (uint16_t), sizeof (sa->v6.sin6_addr));	// ipv6 address is 128 bits
+		memcpy (&sa->v6.sin6_addr, udp_address + 1 + sizeof (uint16_t), sizeof (sa->v6.sin6_addr)); // ipv6 address is 128 bits
 		return sizeof (sa->v6);
 	}
 	return 0;
@@ -1133,7 +1133,7 @@ static int send_socket (struct socket_server *ss, struct request_send *request, 
 	{
 		if (s->protocol == PROTOCOL_TCP)
 		{
-			append_sendbuffer (ss, s, request);	// add to high priority list, even priority == PRIORITY_LOW
+			append_sendbuffer (ss, s, request); // add to high priority list, even priority == PRIORITY_LOW
 		}
 		else
 		{
@@ -1470,11 +1470,11 @@ static int set_udp_address (struct socket_server *ss, struct request_setudp *req
 	}
 	if (type == PROTOCOL_UDP)
 	{
-		memcpy (s->p.udp_address, request->address, 1 + 2 + 4);	// 1 type, 2 port, 4 ipv4
+		memcpy (s->p.udp_address, request->address, 1 + 2 + 4); // 1 type, 2 port, 4 ipv4
 	}
 	else
 	{
-		memcpy (s->p.udp_address, request->address, 1 + 2 + 16);	// 1 type, 2 port, 16 ipv6
+		memcpy (s->p.udp_address, request->address, 1 + 2 + 16); // 1 type, 2 port, 16 ipv6
 	}
 	ATOM_FDEC (&s->udpconnecting);
 	return -1;
@@ -2216,7 +2216,7 @@ static int do_bind (const char *host, int port, int protocol, int *family)
 	char portstr[16];
 	if (host == NULL || host[0] == 0)
 	{
-		host = "0.0.0.0";						// INADDR_ANY
+		host = "0.0.0.0"; // INADDR_ANY
 	}
 	sprintf (portstr, "%d", port);
 	//memset( &ai_hints, 0, sizeof( ai_hints ) );

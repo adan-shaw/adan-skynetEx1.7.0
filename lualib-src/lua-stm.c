@@ -72,7 +72,7 @@ static void stm_release (struct stm_object *obj)
 	}
 	// no one grab the stm object, no need to unlock wlock.
 	skynet_free (obj);
-	rwlock_wunlock (&obj->lock);	// 不解开, 会导致死锁[资源不存在后就不需要释放锁了吗, 应该不是](adan)
+	rwlock_wunlock (&obj->lock); // 不解开, 会导致死锁[资源不存在后就不需要释放锁了吗, 应该不是](adan)
 }
 
 static void stm_releasereader (struct stm_object *obj)
@@ -83,7 +83,7 @@ static void stm_releasereader (struct stm_object *obj)
 		// last reader, no writer. so no need to unlock
 		assert (obj->copy == NULL);
 		skynet_free (obj);
-		rwlock_runlock (&obj->lock);	// 不解开, 会导致死锁[资源不存在后就不需要释放锁了吗, 应该不是](adan)
+		rwlock_runlock (&obj->lock); // 不解开, 会导致死锁[资源不存在后就不需要释放锁了吗, 应该不是](adan)
 		return;
 	}
 	rwlock_runlock (&obj->lock);

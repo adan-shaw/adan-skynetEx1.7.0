@@ -47,8 +47,8 @@ struct skynet_context
 	skynet_cb cb;
 	struct message_queue *queue;
 	ATOM_POINTER logfile;
-	uint64_t cpu_cost;						// in microsec
-	uint64_t cpu_start;						// in microsec
+	uint64_t cpu_cost; // in microsec
+	uint64_t cpu_start; // in microsec
 	char result[32];
 	uint32_t handle;
 	int session_id;
@@ -66,7 +66,7 @@ struct skynet_node
 	int init;
 	uint32_t monitor_exit;
 	pthread_key_t handle_key;
-	bool profile;									// default is on
+	bool profile; // default is on
 };
 
 static struct skynet_node G_NODE;

@@ -343,9 +343,9 @@ static void write_binary (struct bson *b, const void *buffer, size_t sz)
 {
 	int length = reserve_length (b);
 	bson_reserve (b, sz);
-	memcpy (b->ptr + b->size, buffer, sz);	// include sub type
+	memcpy (b->ptr + b->size, buffer, sz); // include sub type
 	b->size += sz;
-	write_length (b, sz - 1, length);	// not include sub type
+	write_length (b, sz - 1, length); // not include sub type
 }
 
 static void append_one (struct bson *bs, lua_State * L, const char *key, size_t sz, int depth)
@@ -384,7 +384,7 @@ static void append_one (struct bson *bs, lua_State * L, const char *key, size_t 
 					{
 						luaL_error (L, "Invalid object id %s", str + 2);
 					}
-					// go though
+				// go though
 				case BSON_JSCODE:
 				case BSON_DBPOINTER:
 				case BSON_SYMBOL:
@@ -586,7 +586,7 @@ static void append_table (struct bson *bs, lua_State * L, const char *key, size_
 	{
 		luaL_error (L, "Too depth while encoding bson");
 	}
-	luaL_checkstack (L, 16, NULL);	// reserve enough stack space to pack table
+	luaL_checkstack (L, 16, NULL); // reserve enough stack space to pack table
 	if (luaL_getmetafield (L, -1, "__len") != LUA_TNIL)
 	{
 		lua_pushvalue (L, -2);
@@ -666,7 +666,7 @@ static void make_object (lua_State * L, int type, const void *ptr, size_t len)
 
 static void unpack_dict (lua_State * L, struct bson_reader *br, bool array)
 {
-	luaL_checkstack (L, 16, NULL);	// reserve enough stack space to unpack table
+	luaL_checkstack (L, 16, NULL); // reserve enough stack space to unpack table
 	int sz = read_int32 (L, br);
 	const void *bytes = read_bytes (L, br, sz - 5);
 	struct bson_reader t = { (const uint8_t *) bytes, sz - 5 };
@@ -1109,7 +1109,7 @@ static int lencode_order (lua_State * L)
 		return luaL_error (L, "Invalid ordered dict");
 	}
 	bson_create (&b);
-	lua_pushvalue (L, 1);					// copy the first arg to n
+	lua_pushvalue (L, 1); // copy the first arg to n
 	lua_pushcfunction (L, encode_bson_byorder);
 	lua_replace (L, 1);
 	lua_pushlightuserdata (L, &b);
@@ -1202,7 +1202,7 @@ static int lbinary (lua_State * L)
 	luaL_buffinit (L, &b);
 	luaL_addchar (&b, 0);
 	luaL_addchar (&b, BSON_BINARY);
-	luaL_addchar (&b, 0);					// sub type
+	luaL_addchar (&b, 0); // sub type
 	lua_pushvalue (L, 1);
 	luaL_addvalue (&b);
 	luaL_pushresult (&b);
@@ -1358,20 +1358,20 @@ static int ltype (lua_State * L)
 static void typeclosure (lua_State * L)
 {
 	static const char *typename_[] = {
-		"number",										// 1
-		"boolean",									// 2
-		"table",										// 3
-		"nil",											// 4
-		"string",										// 5
-		"binary",										// 6
-		"objectid",									// 7
-		"timestamp",								// 8
-		"date",											// 9
-		"regex",										// 10
-		"minkey",										// 11
-		"maxkey",										// 12
-		"int64",										// 13
-		"unsupported",							// 14
+		"number",				// 1
+		"boolean",			// 2
+		"table",				// 3
+		"nil",					// 4
+		"string",				// 5
+		"binary",				// 6
+		"objectid",			// 7
+		"timestamp",		// 8
+		"date",					// 9
+		"regex",				// 10
+		"minkey",				// 11
+		"maxkey",				// 12
+		"int64",				// 13
+		"unsupported",	// 14
 	};
 	int i;
 	int n = sizeof (typename_) / sizeof (typename_[0]);

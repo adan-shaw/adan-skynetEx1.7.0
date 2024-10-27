@@ -88,7 +88,7 @@ static void create_proxy (lua_State * L, const void *data, int index)
 
 static void clear_table (lua_State * L)
 {
-	int t = lua_gettop (L);				// clear top table
+	int t = lua_gettop (L); // clear top table
 	if (lua_type (L, t) != LUA_TTABLE)
 	{
 		luaL_error (L, "Invalid cache");
@@ -112,7 +112,7 @@ static void update_cache (lua_State * L, const void *data, const void *newdata)
 	int t = lua_gettop (L);
 	lua_getfield (L, LUA_REGISTRYINDEX, PROXYCACHE);
 	int pt = t + 1;
-	lua_newtable (L);							// temp table
+	lua_newtable (L); // temp table
 	int nt = pt + 1;
 	lua_pushnil (L);
 	while (lua_next (L, t) != 0)
@@ -308,7 +308,7 @@ static void copyfromdata (lua_State * L)
 	lua_pop (L, 2);
 	copytable (L, 1, p);
 	lua_pushnil (L);
-	lua_setmetatable (L, 1);			// remove metatable
+	lua_setmetatable (L, 1); // remove metatable
 }
 
 static int lindex (lua_State * L)
@@ -321,7 +321,7 @@ static int lindex (lua_State * L)
 static int lnext (lua_State * L)
 {
 	luaL_checktype (L, 1, LUA_TTABLE);
-	lua_settop (L, 2);						/* create a 2nd argument if there isn't one */
+	lua_settop (L, 2); // create a 2nd argument if there isn't one
 	if (lua_next (L, 1))
 		return 2;
 	else

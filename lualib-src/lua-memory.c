@@ -43,7 +43,7 @@ static int ljestat (lua_State * L)
 		"stats.active"
 	};
 	static size_t flush = 1;
-	mallctl_int64 ("epoch", &flush);	// refresh je.stats.cache
+	mallctl_int64 ("epoch", &flush); // refresh je.stats.cache
 	lua_newtable (L);
 	int i;
 	for (i = 0; i < (sizeof (names) / sizeof (names[0])); i++)

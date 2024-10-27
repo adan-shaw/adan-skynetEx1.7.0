@@ -151,7 +151,7 @@ int main (int argc, char *argv[])
 #endif
 
 	struct lua_State *L = luaL_newstate ();
-	luaL_openlibs (L);						// link lua lib
+	luaL_openlibs (L); // link lua lib
 
 	int err = luaL_loadbufferx (L, load_config, strlen (load_config), "=[skynet config]", "t");
 	assert (err == LUA_OK);

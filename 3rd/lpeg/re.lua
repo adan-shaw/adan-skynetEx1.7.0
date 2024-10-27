@@ -20,7 +20,7 @@ local mt = getmetatable(mm.P(0))
 local version = _VERSION
 
 -- No more global accesses after this point
-_ENV = nil     -- does no harm in Lua 5.1
+_ENV = nil -- does no harm in Lua 5.1
 
 
 local any = m.P(1)
@@ -57,7 +57,7 @@ local function updatelocale ()
   Predef.U = any - Predef.u
   Predef.W = any - Predef.w
   Predef.X = any - Predef.x
-  mem = {}    -- restart memoization
+  mem = {} -- restart memoization
   fmem = {}
   gmem = {}
   local mt = {__mode = "v"}

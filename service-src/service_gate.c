@@ -14,7 +14,7 @@
 
 struct connection
 {
-	int id;												// skynet_socket id
+	int id; // skynet_socket id
 	uint32_t agent;
 	uint32_t client;
 	char remote_name[32];

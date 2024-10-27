@@ -48,7 +48,7 @@ static inline void spinlock_destroy (struct spinlock *lock)
 	(void) lock;
 }
 
-#else	// __STDC_NO_ATOMICS__
+#else // __STDC_NO_ATOMICS__
 
 #include "atomic.h"
 
@@ -57,7 +57,7 @@ static inline void spinlock_destroy (struct spinlock *lock)
 #define atomic_load_relaxed_(ptr) STD_ atomic_load_explicit(ptr, STD_ memory_order_relaxed)
 
 #if defined(__x86_64__)
-#include <immintrin.h>					// For _mm_pause
+#include <immintrin.h> // For _mm_pause
 #define atomic_pause_() _mm_pause()
 #else
 #define atomic_pause_() ((void)0)

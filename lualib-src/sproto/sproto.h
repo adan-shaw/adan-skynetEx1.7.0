@@ -50,9 +50,9 @@ struct sproto_arg
 	struct sproto_type *subtype;
 	void *value;
 	int length;
-	int index;										// array base 1, negative value indicates that it is a empty array
-	int mainindex;								// for map
-	int extra;										// SPROTO_TINTEGER: decimal ; SPROTO_TSTRING 0:utf8 string 1:binary
+	int index;			// array base 1, negative value indicates that it is a empty array
+	int mainindex;	// for map
+	int extra;			// SPROTO_TINTEGER: decimal ; SPROTO_TSTRING 0:utf8 string 1:binary
 
 	// When interpretd two fields struct as map, the following fields must not be NULL.
 	const char *ktagname;

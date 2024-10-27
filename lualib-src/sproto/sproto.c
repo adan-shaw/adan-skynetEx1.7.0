@@ -243,7 +243,7 @@ static const uint8_t *import_field (struct sproto *s, struct field *f, const uin
 			continue;
 		}
 		if (tag == 0)
-		{														// name
+		{													// name
 			if (value != 0)
 				return NULL;
 			f->name = import_string (s, stream + fn * SIZEOF_FIELD);
@@ -256,7 +256,7 @@ static const uint8_t *import_field (struct sproto *s, struct field *f, const uin
 		{
 		case 1:										// buildin
 			if (value >= SPROTO_TSTRUCT)
-				return NULL;						// invalid buildin type
+				return NULL;					// invalid buildin type
 			f->type = value;
 			break;
 		case 2:										// type index
@@ -266,12 +266,12 @@ static const uint8_t *import_field (struct sproto *s, struct field *f, const uin
 			}
 			else if (f->type == SPROTO_TSTRING)
 			{
-				f->extra = value;				// string if 0 ; binary is 1
+				f->extra = value;			// string if 0 ; binary is 1
 			}
 			else
 			{
 				if (value >= s->type_n)
-					return NULL;					// invalid type index
+					return NULL;				// invalid type index
 				if (f->type >= 0)
 					return NULL;
 				f->type = SPROTO_TSTRUCT;
@@ -346,7 +346,7 @@ static const uint8_t *import_type (struct sproto *s, struct sproto_type *t, cons
 	{
 		return result;
 	}
-	stream += todword (stream) + SIZEOF_LENGTH;	// second data
+	stream += todword (stream) + SIZEOF_LENGTH; // second data
 	n = count_array (stream);
 	if (n < 0)
 		return NULL;
@@ -364,7 +364,7 @@ static const uint8_t *import_type (struct sproto *s, struct sproto_type *t, cons
 			return NULL;
 		tag = f->tag;
 		if (tag <= last)
-			return NULL;							// tag must in ascending order
+			return NULL; // tag must in ascending order
 		if (tag > last + 1)
 		{
 			++maxn;
@@ -826,9 +826,9 @@ static int encode_object (sproto_callback cb, struct sproto_arg *args, uint8_t *
 	{
 		if (sz == SPROTO_CB_NIL)
 			return 0;
-		return -1;									// sz == SPROTO_CB_ERROR
+		return -1; // sz == SPROTO_CB_ERROR
 	}
-	assert (sz <= size - SIZEOF_LENGTH);	// verify buffer overflow
+	assert (sz <= size - SIZEOF_LENGTH);// verify buffer overflow
 	return fill_size (data, sz);
 }
 
@@ -970,11 +970,11 @@ static uint8_t *encode_array_object (sproto_callback cb, struct sproto_arg *args
 				break;
 			}
 			if (sz == SPROTO_CB_NOARRAY)
-			{													// no array, don't encode it
+			{						// no array, don't encode it
 				*noarray = 1;
 				break;
 			}
-			return NULL;							// sz == SPROTO_CB_ERROR
+			return NULL;// sz == SPROTO_CB_ERROR
 		}
 		fill_size (buffer, sz);
 		buffer += SIZEOF_LENGTH + sz;
@@ -1018,11 +1018,11 @@ static int encode_array (sproto_callback cb, struct sproto_arg *args, uint8_t * 
 			sz = cb (args);
 			if (sz < 0)
 			{
-				if (sz == SPROTO_CB_NIL)	// nil object , end of array
+				if (sz == SPROTO_CB_NIL) // nil object , end of array
 					break;
-				if (sz == SPROTO_CB_NOARRAY)	// no array, don't encode it
+				if (sz == SPROTO_CB_NOARRAY) // no array, don't encode it
 					return 0;
-				return -1;							// sz == SPROTO_CB_ERROR
+				return -1; // sz == SPROTO_CB_ERROR
 			}
 			if (size < 1)
 				return -1;
@@ -1109,16 +1109,16 @@ int sproto_encode (const struct sproto_type *st, void *buffer, int size, sproto_
 					{
 						if (sz == SPROTO_CB_NIL)
 							continue;
-						if (sz == SPROTO_CB_NOARRAY)	// no array, don't encode it
+						if (sz == SPROTO_CB_NOARRAY) // no array, don't encode it
 							return 0;
-						return -1;					// sz == SPROTO_CB_ERROR
+						return -1; // sz == SPROTO_CB_ERROR
 					}
 					if (sz == SIZEOF_INT32)
 					{
 						if (u.u32 < 0x7fff)
 						{
 							value = (u.u32 + 1) * 2;
-							sz = 2;						// sz can be any number > 0
+							sz = 2; // sz can be any number > 0
 						}
 						else
 						{

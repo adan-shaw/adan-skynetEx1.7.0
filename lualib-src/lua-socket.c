@@ -122,7 +122,7 @@ static int lpushbuffer (lua_State * L)
 	luaL_checktype (L, pool_index, LUA_TTABLE);
 	int sz = luaL_checkinteger (L, 4);
 	lua_rawgeti (L, pool_index, 1);
-	struct buffer_node *free_node = lua_touserdata (L, -1);	// sb poolt msg size free_node
+	struct buffer_node *free_node = lua_touserdata (L, -1); // sb poolt msg size free_node
 	lua_pop (L, 1);
 	if (free_node == NULL)
 	{
@@ -147,7 +147,7 @@ static int lpushbuffer (lua_State * L)
 		}
 	}
 	lua_pushlightuserdata (L, free_node->next);
-	lua_rawseti (L, pool_index, 1);	// sb poolt msg size
+	lua_rawseti (L, pool_index, 1); // sb poolt msg size
 	free_node->msg = msg;
 	free_node->sz = sz;
 	free_node->next = NULL;

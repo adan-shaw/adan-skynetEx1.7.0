@@ -120,7 +120,7 @@ struct skynet_module *skynet_module_query (const char *name)
 	if (result)
 		return result;
 
-	SPIN_LOCK (M) result = _query (name);	// double check
+	SPIN_LOCK (M) result = _query (name); // double check
 
 	if (result == NULL && M->count < MAX_MODULE_TYPE)
 	{
