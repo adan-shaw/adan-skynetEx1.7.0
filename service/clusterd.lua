@@ -57,7 +57,7 @@ local function open_channel(t, key)
 		if succ then
 			t[key] = c
 			ct.channel = c
-                        node_sender_closed[key] = nil
+						node_sender_closed[key] = nil
 		else
 			err = string.format("changenode [%s] (%s:%s) failed", key, host, port)
 		end
@@ -69,9 +69,9 @@ local function open_channel(t, key)
 		else
 			-- trun off the sender
 			succ, err = pcall(skynet.call, c, "lua", "changenode", false)
-                        if succ then --trun off failed, wait next index todo turn off
-                                node_sender_closed[key] = true
-                        end
+						if succ then --trun off failed, wait next index todo turn off
+								node_sender_closed[key] = true
+						end
 		end
 	else
 		err = string.format("cluster node [%s] is absent.", key)

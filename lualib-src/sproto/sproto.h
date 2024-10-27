@@ -27,21 +27,22 @@ struct sproto_type;
 #define SPROTO_CB_NIL -2
 #define SPROTO_CB_NOARRAY -3
 
-struct sproto * sproto_create(const void * proto, size_t sz);
-void sproto_release(struct sproto *);
+struct sproto *sproto_create (const void *proto, size_t sz);
+void sproto_release (struct sproto *);
 
-int sproto_prototag(const struct sproto *, const char * name);
-const char * sproto_protoname(const struct sproto *, int proto);
+int sproto_prototag (const struct sproto *, const char *name);
+const char *sproto_protoname (const struct sproto *, int proto);
 // SPROTO_REQUEST(0) : request, SPROTO_RESPONSE(1): response
-struct sproto_type * sproto_protoquery(const struct sproto *, int proto, int what);
-int sproto_protoresponse(const struct sproto *, int proto);
+struct sproto_type *sproto_protoquery (const struct sproto *, int proto, int what);
+int sproto_protoresponse (const struct sproto *, int proto);
 
-struct sproto_type * sproto_type(const struct sproto *, const char * type_name);
+struct sproto_type *sproto_type (const struct sproto *, const char *type_name);
 
-int sproto_pack(const void * src, int srcsz, void * buffer, int bufsz);
-int sproto_unpack(const void * src, int srcsz, void * buffer, int bufsz);
+int sproto_pack (const void *src, int srcsz, void *buffer, int bufsz);
+int sproto_unpack (const void *src, int srcsz, void *buffer, int bufsz);
 
-struct sproto_arg {
+struct sproto_arg
+{
 	void *ud;
 	const char *tagname;
 	int tagid;
@@ -49,22 +50,22 @@ struct sproto_arg {
 	struct sproto_type *subtype;
 	void *value;
 	int length;
-	int index;	// array base 1, negative value indicates that it is a empty array
-	int mainindex;	// for map
-	int extra; // SPROTO_TINTEGER: decimal ; SPROTO_TSTRING 0:utf8 string 1:binary
+	int index;										// array base 1, negative value indicates that it is a empty array
+	int mainindex;								// for map
+	int extra;										// SPROTO_TINTEGER: decimal ; SPROTO_TSTRING 0:utf8 string 1:binary
 
 	// When interpretd two fields struct as map, the following fields must not be NULL.
 	const char *ktagname;
 	const char *vtagname;
 };
 
-typedef int (*sproto_callback)(const struct sproto_arg *args);
+typedef int (*sproto_callback) (const struct sproto_arg * args);
 
-int sproto_decode(const struct sproto_type *, const void * data, int size, sproto_callback cb, void *ud);
-int sproto_encode(const struct sproto_type *, void * buffer, int size, sproto_callback cb, void *ud);
+int sproto_decode (const struct sproto_type *, const void *data, int size, sproto_callback cb, void *ud);
+int sproto_encode (const struct sproto_type *, void *buffer, int size, sproto_callback cb, void *ud);
 
 // for debug use
-void sproto_dump(struct sproto *);
-const char * sproto_name(struct sproto_type *);
+void sproto_dump (struct sproto *);
+const char *sproto_name (struct sproto_type *);
 
 #endif
